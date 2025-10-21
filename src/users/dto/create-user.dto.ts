@@ -7,7 +7,7 @@ export class CreateUserDto {
     @IsEmail({},{message:"provide correct mail"})
     email:string
 
-    @MinLength(8,{message:"Password should be minimum of 8 character"})
+    @MinLength(6,{message:"Password should be minimum of 6 character"})
     @Matches(/^(?=.*[A-Z])(?=.*[a-z])(?=.*\d).+$/,{
         message:"Password must contain at least one uppercase letter, one lowercase letter, and one number"
     }
