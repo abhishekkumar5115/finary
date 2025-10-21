@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+
 # Finary
 
 A modern FinTech application for creating invoices, managing virtual accounts, and facilitating multi-currency payments.
