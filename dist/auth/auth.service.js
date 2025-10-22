@@ -54,21 +54,21 @@ let AuthService = class AuthService {
         this.userService = userService;
         this.jwtService = jwtService;
     }
-    async validateUser(loginUserDto) {
-        const { email, password } = loginUserDto;
-        const user = await this.userService.findOne(email);
+    async validateUser(LoginUserDto) {
+        const user = await this.userService.findOneEmail(LoginUserDto.email);
         if (!user)
-            throw new common_1.UnauthorizedException("User not found!");
-        const isValidPassword = await bcrypt.compare(password, user.password);
-        if (!isValidPassword)
-            throw new common_1.UnauthorizedException('Invalid password!');
-        return user;
+            throw new common_1.UnauthorizedException("user doesn't exist");
+        const validPassword = await bcrypt.compare(LoginUserDto.password, user.password);
+        if (!validPassword)
+            throw new common_1.UnauthorizedException("Incorrect Password");
+        const { password, ...result } = user;
+        return result;
     }
-    async login(loginUserDto) {
-        const user = await this.validateUser(loginUserDto);
+    async login(user) {
         const payload = { email: user.email, sub: user.id };
-        const token = await this.jwtService.signAsync(payload);
-        return { access_token: token };
+        return {
+            access_token: this.jwtService.sign(payload),
+        };
     }
 };
 exports.AuthService = AuthService;

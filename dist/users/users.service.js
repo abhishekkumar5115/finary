@@ -69,8 +69,11 @@ let UsersService = class UsersService {
     findAll() {
         return `This action returns all users`;
     }
-    async findOne(email) {
+    async findOneEmail(email) {
         return this.userRepository.findOne({ where: { email } });
+    }
+    async findOneById(id) {
+        return this.userRepository.findOne({ where: { id } });
     }
     update(id, updateUserDto) {
         return `This action updates a #${id} user`;

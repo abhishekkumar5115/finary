@@ -17,25 +17,26 @@ const common_1 = require("@nestjs/common");
 const auth_service_1 = require("./auth.service");
 const login_user_dto_1 = require("../users/dto/login-user.dto");
 let AuthController = class AuthController {
-    authService;
-    constructor(authService) {
-        this.authService = authService;
+    AuthService;
+    constructor(AuthService) {
+        this.AuthService = AuthService;
     }
-    async login(loginUserdto) {
-        const token = await this.authService.login(loginUserdto);
-        if (!token)
-            throw new common_1.UnauthorizedException('Invalid credentials');
-        return token;
+    async signIn(loginUserDto) {
+        const user = await this.AuthService.validateUser(loginUserDto);
+        if (!user)
+            throw new common_1.UnauthorizedException("Invalid credentials");
+        return this.AuthService.login(user);
     }
 };
 exports.AuthController = AuthController;
 __decorate([
+    (0, common_1.HttpCode)(common_1.HttpStatus.OK),
     (0, common_1.Post)('login'),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [login_user_dto_1.LoginUserDto]),
     __metadata("design:returntype", Promise)
-], AuthController.prototype, "login", null);
+], AuthController.prototype, "signIn", null);
 exports.AuthController = AuthController = __decorate([
     (0, common_1.Controller)('auth'),
     __metadata("design:paramtypes", [auth_service_1.AuthService])
