@@ -30,8 +30,11 @@ export class UsersService {
     return `This action returns all users`;
   }
 
-  async findOne(email: string):Promise<User | null> {
+  async findOneEmail(email: string):Promise<User | null> {
     return this.userRepository.findOne({where:{email}});
+  }
+  async findOneById(id: string): Promise<User | null> {
+    return this.userRepository.findOne({ where: { id } });
   }
 
   update(id: number, updateUserDto: UpdateUserDto) {

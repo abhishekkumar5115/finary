@@ -28,8 +28,8 @@ let UsersController = class UsersController {
     findAll() {
         return this.usersService.findAll();
     }
-    findOne(email) {
-        return this.usersService.findOne(email);
+    findOneEmail(email) {
+        return this.usersService.findOneEmail(email);
     }
     update(id, updateUserDto) {
         return this.usersService.update(+id, updateUserDto);
@@ -58,7 +58,7 @@ __decorate([
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", void 0)
-], UsersController.prototype, "findOne", null);
+], UsersController.prototype, "findOneEmail", null);
 __decorate([
     (0, common_1.Patch)(':id'),
     __param(0, (0, common_1.Param)('id')),
