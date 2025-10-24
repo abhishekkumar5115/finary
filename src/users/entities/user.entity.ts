@@ -1,4 +1,5 @@
-import {Entity,Column,PrimaryGeneratedColumn,CreateDateColumn} from 'typeorm'
+import {Entity,Column,PrimaryGeneratedColumn,CreateDateColumn,OneToMany} from 'typeorm'
+import {Client} from '../../clients/entities/client.entity'
 
 @Entity('users')
 export class User {
@@ -16,5 +17,8 @@ export class User {
 
     @CreateDateColumn()
     created_at:Date;
+
+    @OneToMany(()=>Client,(clients)=>clients.user)
+    clients: Client[]
 
 }
