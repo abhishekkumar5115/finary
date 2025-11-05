@@ -12,11 +12,13 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.Client = void 0;
 const typeorm_1 = require("typeorm");
 const user_entity_1 = require("../../users/entities/user.entity");
+const invoice_entity_1 = require("../../invoices/entities/invoice.entity");
 let Client = class Client {
     id;
     name;
     email;
     user;
+    invoices;
 };
 exports.Client = Client;
 __decorate([
@@ -36,6 +38,10 @@ __decorate([
     (0, typeorm_1.JoinColumn)({ name: 'user_id' }),
     __metadata("design:type", user_entity_1.User)
 ], Client.prototype, "user", void 0);
+__decorate([
+    (0, typeorm_1.OneToMany)(() => invoice_entity_1.Invoice, (invoices) => invoices.client),
+    __metadata("design:type", Array)
+], Client.prototype, "invoices", void 0);
 exports.Client = Client = __decorate([
     (0, typeorm_1.Entity)('clients')
 ], Client);
