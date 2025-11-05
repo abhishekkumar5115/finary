@@ -1,5 +1,6 @@
-import {Entity,Column,PrimaryGeneratedColumn,ManyToOne, JoinColumn} from 'typeorm';
+import {Entity,Column,PrimaryGeneratedColumn,ManyToOne, JoinColumn,OneToMany} from 'typeorm';
 import {User} from '../../users/entities/user.entity'
+import { Invoice } from 'src/invoices/entities/invoice.entity';
 
 @Entity('clients')
 export class Client {
@@ -15,4 +16,7 @@ export class Client {
     @ManyToOne(()=> User, (user)=> user.clients ,{ eager: true })
     @JoinColumn({ name: 'user_id' })
     user:User
+
+    @OneToMany(()=>Invoice,(invoices)=>invoices.client)
+    invoices:Invoice[]
 }

@@ -8,6 +8,8 @@ import {User} from './users/entities/user.entity'
 import { Client } from './clients/entities/client.entity';
 import { AuthModule } from './auth/auth.module';
 import { ClientsModule } from './clients/clients.module';
+import { InvoicesModule } from './invoices/invoices.module';
+import { Invoice } from './invoices/entities/invoice.entity';
 
 
 
@@ -21,13 +23,14 @@ import { ClientsModule } from './clients/clients.module';
       username: process.env.POSTGRES_USER,
       password: process.env.POSTGRES_PASSWORD,
       database: process.env.POSTGRES_DB,
-      entities: [User,Client],
+      entities: [User,Client,Invoice],
       synchronize: true
 
     }),
     UsersModule,
     AuthModule,
-    ClientsModule
+    ClientsModule,
+    InvoicesModule
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -17,6 +17,8 @@ const user_entity_1 = require("./users/entities/user.entity");
 const client_entity_1 = require("./clients/entities/client.entity");
 const auth_module_1 = require("./auth/auth.module");
 const clients_module_1 = require("./clients/clients.module");
+const invoices_module_1 = require("./invoices/invoices.module");
+const invoice_entity_1 = require("./invoices/entities/invoice.entity");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
@@ -31,12 +33,13 @@ exports.AppModule = AppModule = __decorate([
                 username: process.env.POSTGRES_USER,
                 password: process.env.POSTGRES_PASSWORD,
                 database: process.env.POSTGRES_DB,
-                entities: [user_entity_1.User, client_entity_1.Client],
+                entities: [user_entity_1.User, client_entity_1.Client, invoice_entity_1.Invoice],
                 synchronize: true
             }),
             users_module_1.UsersModule,
             auth_module_1.AuthModule,
-            clients_module_1.ClientsModule
+            clients_module_1.ClientsModule,
+            invoices_module_1.InvoicesModule
         ],
         controllers: [app_controller_1.AppController],
         providers: [app_service_1.AppService],
