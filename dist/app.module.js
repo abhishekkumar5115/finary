@@ -19,6 +19,7 @@ const auth_module_1 = require("./auth/auth.module");
 const clients_module_1 = require("./clients/clients.module");
 const invoices_module_1 = require("./invoices/invoices.module");
 const invoice_entity_1 = require("./invoices/entities/invoice.entity");
+const payments_module_1 = require("./payments/payments.module");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
@@ -39,7 +40,8 @@ exports.AppModule = AppModule = __decorate([
             users_module_1.UsersModule,
             auth_module_1.AuthModule,
             clients_module_1.ClientsModule,
-            invoices_module_1.InvoicesModule
+            invoices_module_1.InvoicesModule,
+            payments_module_1.PaymentsModule
         ],
         controllers: [app_controller_1.AppController],
         providers: [app_service_1.AppService],

@@ -18,7 +18,8 @@ const invoices_service_1 = require("./invoices.service");
 const create_invoice_dto_1 = require("./dto/create-invoice.dto");
 const update_invoice_dto_1 = require("./dto/update-invoice.dto");
 const common_2 = require("@nestjs/common");
-const passport_1 = require("@nestjs/passport");
+const public_decorators_1 = require("../auth/public.decorators");
+const jwt_auth_gaurd_1 = require("../auth/jwt-auth-gaurd");
 let InvoicesController = class InvoicesController {
     invoicesService;
     constructor(invoicesService) {
@@ -27,11 +28,14 @@ let InvoicesController = class InvoicesController {
     create(createInvoiceDto, req) {
         return this.invoicesService.create(createInvoiceDto, req.user);
     }
+    createPaymentOrder(id) {
+        return this.invoicesService.createPaymentOrder(id);
+    }
     findAll() {
         return this.invoicesService.findAll();
     }
     findOne(id) {
-        return this.invoicesService.findOne(+id);
+        return this.invoicesService.findOne(id);
     }
     update(id, updateInvoiceDto) {
         return this.invoicesService.update(+id, updateInvoiceDto);
@@ -50,12 +54,21 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], InvoicesController.prototype, "create", null);
 __decorate([
+    (0, public_decorators_1.Public)(),
+    (0, common_1.Post)(':id/create-order'),
+    __param(0, (0, common_1.Param)('id')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", void 0)
+], InvoicesController.prototype, "createPaymentOrder", null);
+__decorate([
     (0, common_1.Get)(),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", void 0)
 ], InvoicesController.prototype, "findAll", null);
 __decorate([
+    (0, public_decorators_1.Public)(),
     (0, common_1.Get)(':id'),
     __param(0, (0, common_1.Param)('id')),
     __metadata("design:type", Function),
@@ -78,7 +91,7 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], InvoicesController.prototype, "remove", null);
 exports.InvoicesController = InvoicesController = __decorate([
-    (0, common_2.UseGuards)(((0, passport_1.AuthGuard)('jwt'))),
+    (0, common_2.UseGuards)(jwt_auth_gaurd_1.JwtAuthGaurd),
     (0, common_1.Controller)('invoices'),
     __metadata("design:paramtypes", [invoices_service_1.InvoicesService])
 ], InvoicesController);

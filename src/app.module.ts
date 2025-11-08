@@ -10,6 +10,7 @@ import { AuthModule } from './auth/auth.module';
 import { ClientsModule } from './clients/clients.module';
 import { InvoicesModule } from './invoices/invoices.module';
 import { Invoice } from './invoices/entities/invoice.entity';
+import { PaymentsModule } from './payments/payments.module';
 
 
 
@@ -30,7 +31,8 @@ import { Invoice } from './invoices/entities/invoice.entity';
     UsersModule,
     AuthModule,
     ClientsModule,
-    InvoicesModule
+    InvoicesModule,
+    PaymentsModule
   ],
   controllers: [AppController],
   providers: [AppService],

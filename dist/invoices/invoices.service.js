@@ -11,6 +11,9 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.InvoicesService = void 0;
 const common_1 = require("@nestjs/common");
@@ -19,14 +22,23 @@ const typeorm_1 = require("@nestjs/typeorm");
 const typeorm_2 = require("typeorm");
 const invoice_entity_1 = require("./entities/invoice.entity");
 const user_entity_1 = require("../users/entities/user.entity");
+const config_1 = require("@nestjs/config");
+const razorpay_1 = __importDefault(require("razorpay"));
 let InvoicesService = class InvoicesService {
     clientRepository;
     invoiceRepository;
     userRepository;
-    constructor(clientRepository, invoiceRepository, userRepository) {
+    configService;
+    razorpay;
+    constructor(clientRepository, invoiceRepository, userRepository, configService) {
         this.clientRepository = clientRepository;
         this.invoiceRepository = invoiceRepository;
         this.userRepository = userRepository;
+        this.configService = configService;
+        this.razorpay = new razorpay_1.default({
+            key_id: this.configService.get('RAZORPAY_KEY_ID'),
+            key_secret: this.configService.get('RAZORPAY_KEY_SECRET')
+        });
     }
     async create(createInvoiceDto, userPayload) {
         const user = await this.userRepository.findOne({
@@ -53,11 +65,33 @@ let InvoicesService = class InvoicesService {
         });
         return await this.invoiceRepository.save(newInvoice);
     }
-    findAll() {
-        return `This action returns all invoices`;
+    async createPaymentOrder(invoiceId) {
+        const invoice = await this.invoiceRepository.findOne({ where: { id: invoiceId } });
+        if (!invoice)
+            throw new common_1.NotFoundException("Invoice Not Found!");
+        const options = {
+            amount: invoice.amount * 100,
+            currency: 'INR',
+            receipt: invoice.id,
+        };
+        try {
+            const order = await this.razorpay.orders.create(options);
+            return order;
+        }
+        catch (error) {
+            throw new error('Failed to create new order');
+        }
+    }
+    async findAll() {
+        return await this.invoiceRepository.find({
+            relations: ['client']
+        });
     }
     findOne(id) {
-        return `This action returns a #${id} invoice`;
+        return this.invoiceRepository.findOne({
+            where: { id: id },
+            relations: ['client']
+        });
     }
     update(id, updateInvoiceDto) {
         return `This action updates a #${id} invoice`;
@@ -74,6 +108,7 @@ exports.InvoicesService = InvoicesService = __decorate([
     __param(2, (0, typeorm_1.InjectRepository)(user_entity_1.User)),
     __metadata("design:paramtypes", [typeorm_2.Repository,
         typeorm_2.Repository,
-        typeorm_2.Repository])
+        typeorm_2.Repository,
+        config_1.ConfigService])
 ], InvoicesService);
 //# sourceMappingURL=invoices.service.js.map
