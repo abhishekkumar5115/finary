@@ -65,9 +65,20 @@ const PayInvoice = () =>{
             order_id : order.id,
 
             //on payment success
-            handler : function(response:any){
-                console.log("razorpay response",response);
-                alert("Payment successful! Next, we will verify this.")
+            handler : async function(response:any){
+                try {
+                    await api.post('/payments/verify-payment',{
+                        razorpay_payment_id : response.razorpay_payment_id,
+                        razorpay_order_id : response.razorpay_order_id,
+                        razorpay_signature : response.razorpay_signature,
+                        invoiceid : invoiceId
+                    });
+                    alert("Payment Successful and Verified!");
+
+                    setInvoice(prev=>prev?{...prev,status:'PAID'}:null);
+                } catch (error) {
+                    alert("Payment verification failed! Please contact support.")
+                }
             },
             prefill:{
                 name : invoice?.client?.name
