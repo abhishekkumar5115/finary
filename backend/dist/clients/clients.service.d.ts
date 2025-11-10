@@ -11,5 +11,7 @@ export declare class ClientsService {
     findAll(user: User): Promise<Client[]>;
     findOne(id: string, user: any): string;
     update(id: string, updateClientDto: UpdateClientDto, user: User): Promise<Client>;
-    remove(id: string): string;
+    remove(id: string, user: any): Promise<{
+        message: string;
+    }>;
 }

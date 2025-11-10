@@ -78,13 +78,15 @@ let InvoicesService = class InvoicesService {
             const order = await this.razorpay.orders.create(options);
             return order;
         }
-        catch (error) {
-            throw new error('Failed to create new order');
+        catch (err) {
+            throw new Error('Failed to create new order');
         }
     }
-    async findAll() {
+    async findAll(user) {
         return await this.invoiceRepository.find({
-            relations: ['client']
+            where: { user: { id: user.id } },
+            relations: ['client', 'user'],
+            order: { created_at: 'DESC' },
         });
     }
     findOne(id) {
@@ -93,19 +95,41 @@ let InvoicesService = class InvoicesService {
             relations: ['client']
         });
     }
-    update(id, updateInvoiceDto) {
-        return `This action updates a #${id} invoice`;
+    async update(id, updateInvoiceDto, user) {
+        const invoice = await this.invoiceRepository.findOne({
+            where: { id: id },
+            relations: ['user']
+        });
+        if (!invoice)
+            throw new common_1.NotFoundException("Invoice Not found!");
+        if (invoice.user.id !== user.id) {
+            throw new common_1.ForbiddenException("You are not authorized to edit this!");
+        }
+        Object.assign(invoice, updateInvoiceDto);
+        return await this.invoiceRepository.save(invoice);
     }
     async updateInvoiceStatus(id, status) {
-        const invoice = await this.invoiceRepository.findOne({ where: { id: id } });
+        const invoice = await this.invoiceRepository.findOne({
+            where: { id: id }
+        });
         if (!invoice) {
             throw new common_1.NotFoundException("Invoice Not found!");
         }
         invoice.status = status;
         return this.invoiceRepository.save(invoice);
     }
-    remove(id) {
-        return `This action removes a #${id} invoice`;
+    async remove(id, user) {
+        const invoice = await this.invoiceRepository.findOne({
+            where: { id: id },
+            relations: ['user']
+        });
+        if (!invoice)
+            throw new common_1.NotFoundException("Invoice Not found!");
+        if (invoice.user.id !== user.id) {
+            throw new common_1.ForbiddenException("You are not authorized to delete this!");
+        }
+        await this.invoiceRepository.remove(invoice);
+        return { message: "Invoice deleted successfully!" };
     }
 };
 exports.InvoicesService = InvoicesService;

@@ -31,17 +31,17 @@ let InvoicesController = class InvoicesController {
     createPaymentOrder(id) {
         return this.invoicesService.createPaymentOrder(id);
     }
-    findAll() {
-        return this.invoicesService.findAll();
+    findAll(req) {
+        return this.invoicesService.findAll(req.user);
     }
     findOne(id) {
         return this.invoicesService.findOne(id);
     }
-    update(id, updateInvoiceDto) {
-        return this.invoicesService.update(+id, updateInvoiceDto);
+    update(id, updateInvoiceDto, req) {
+        return this.invoicesService.update(id, updateInvoiceDto, req.user);
     }
-    remove(id) {
-        return this.invoicesService.remove(+id);
+    remove(id, req) {
+        return this.invoicesService.remove(id, req.user);
     }
 };
 exports.InvoicesController = InvoicesController;
@@ -63,8 +63,9 @@ __decorate([
 ], InvoicesController.prototype, "createPaymentOrder", null);
 __decorate([
     (0, common_1.Get)(),
+    __param(0, (0, common_1.Req)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", []),
+    __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", void 0)
 ], InvoicesController.prototype, "findAll", null);
 __decorate([
@@ -79,19 +80,21 @@ __decorate([
     (0, common_1.Patch)(':id'),
     __param(0, (0, common_1.Param)('id')),
     __param(1, (0, common_1.Body)()),
+    __param(2, (0, common_1.Req)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, update_invoice_dto_1.UpdateInvoiceDto]),
+    __metadata("design:paramtypes", [String, update_invoice_dto_1.UpdateInvoiceDto, Object]),
     __metadata("design:returntype", void 0)
 ], InvoicesController.prototype, "update", null);
 __decorate([
     (0, common_1.Delete)(':id'),
     __param(0, (0, common_1.Param)('id')),
+    __param(1, (0, common_1.Req)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
+    __metadata("design:paramtypes", [String, Object]),
     __metadata("design:returntype", void 0)
 ], InvoicesController.prototype, "remove", null);
 exports.InvoicesController = InvoicesController = __decorate([
-    (0, common_2.UseGuards)(jwt_auth_gaurd_1.JwtAuthGaurd),
+    (0, common_2.UseGuards)(jwt_auth_gaurd_1.JwtAuthGuard),
     (0, common_1.Controller)('invoices'),
     __metadata("design:paramtypes", [invoices_service_1.InvoicesService])
 ], InvoicesController);

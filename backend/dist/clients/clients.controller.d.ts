@@ -8,5 +8,7 @@ export declare class ClientsController {
     findAll(req: any): Promise<import("./entities/client.entity").Client[]>;
     findOne(id: string, req: any): string;
     update(id: string, updateClientDto: UpdateClientDto, req: any): Promise<import("./entities/client.entity").Client>;
-    remove(id: string): string;
+    remove(id: string, req: any): Promise<{
+        message: string;
+    }>;
 }

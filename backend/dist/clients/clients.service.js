@@ -33,7 +33,10 @@ let ClientsService = class ClientsService {
         return this.clientRepository.save(newClient);
     }
     async findAll(user) {
-        return await this.clientRepository.findBy({ user: { id: user.id } });
+        return await this.clientRepository.find({
+            where: { user: { id: user.id } },
+            relations: ['user'],
+        });
     }
     findOne(id, user) {
         return `This action returns a #${id} client`;
@@ -49,8 +52,14 @@ let ClientsService = class ClientsService {
         Object.assign(client, updateClientDto);
         return this.clientRepository.save(client);
     }
-    remove(id) {
-        return `This action removes a #${id} client`;
+    async remove(id, user) {
+        const client = await this.clientRepository.findOne({
+            where: { id, user: { id: user.id } }
+        });
+        if (!client)
+            throw new common_1.NotFoundException("Client Not Found!");
+        await this.clientRepository.remove(client);
+        return { message: "client deleted successfully!" };
     }
 };
 exports.ClientsService = ClientsService;

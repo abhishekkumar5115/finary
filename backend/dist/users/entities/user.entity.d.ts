@@ -1,5 +1,5 @@
 import { Client } from '../../clients/entities/client.entity';
-import { Invoice } from 'src/invoices/entities/invoice.entity';
+import { Invoice } from '../../invoices/entities/invoice.entity';
 export declare class User {
     id: string;
     email: string;

@@ -1,7 +1,7 @@
 import { Injectable, BadRequestException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { InvoicesService } from 'src/invoices/invoices.service';
-import { InvoiceStatus } from 'src/invoices/entities/invoice.entity';
+import { InvoicesService } from '../invoices/invoices.service';
+import { InvoiceStatus } from '../invoices/entities/invoice.entity';
 import * as crypto from 'crypto'
 
 

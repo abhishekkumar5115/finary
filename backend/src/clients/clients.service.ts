@@ -24,7 +24,10 @@ export class ClientsService {
   }
 
   async findAll(user:User) {
-    return await this.clientRepository.findBy({ user: { id: user.id } });
+    return await this.clientRepository.find({
+    where: { user: { id: user.id } },
+    relations: ['user'],
+  });
   }
 
   findOne(id: string,user:any) {
@@ -45,7 +48,13 @@ export class ClientsService {
     return this.clientRepository.save(client);
   }
 
-  remove(id: string) {
-    return `This action removes a #${id} client`;
+  async remove(id: string,user:any) {
+    const client = await this.clientRepository.findOne({
+      where:{id,user:{id:user.id}}
+    })
+
+    if(!client)throw new NotFoundException("Client Not Found!")
+    await this.clientRepository.remove(client);
+    return {message:"client deleted successfully!"}
   }
 }

@@ -3,8 +3,8 @@ import { InvoicesService } from './invoices.service';
 import { InvoicesController } from './invoices.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Invoice } from './entities/invoice.entity';
-import { Client } from 'src/clients/entities/client.entity';
-import { User } from 'src/users/entities/user.entity';
+import { Client } from '../clients/entities/client.entity';
+import { User } from '../users/entities/user.entity';
 
 @Module({
   imports:[TypeOrmModule.forFeature([Invoice,User,Client])],

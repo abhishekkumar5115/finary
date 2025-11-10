@@ -58,6 +58,9 @@ let UsersService = class UsersService {
     }
     async create(createUserDto) {
         const { email, full_name, password } = createUserDto;
+        const existingUser = await this.userRepository.findOne({ where: { email: email } });
+        if (existingUser)
+            throw new common_1.ConflictException("Email already Exist!");
         const hasshedPassword = await bcrypt.hash(password, 10);
         const user = this.userRepository.create({
             email,

@@ -3,11 +3,10 @@ import { InvoicesService } from './invoices.service';
 import { CreateInvoiceDto } from './dto/create-invoice.dto';
 import { UpdateInvoiceDto } from './dto/update-invoice.dto';
 import { UseGuards } from '@nestjs/common';
-import { AuthGuard } from '@nestjs/passport';
-import { Public } from 'src/auth/public.decorators';
-import { JwtAuthGaurd } from 'src/auth/jwt-auth-gaurd';
+import { Public } from '../auth/public.decorators';
+import { JwtAuthGuard } from '../auth/jwt-auth-gaurd';
 
-@UseGuards(JwtAuthGaurd)
+@UseGuards(JwtAuthGuard)
 @Controller('invoices')
 export class InvoicesController {
   constructor(
@@ -26,8 +25,8 @@ export class InvoicesController {
   }
 
   @Get()
-  findAll() {
-    return this.invoicesService.findAll();
+  findAll(@Req() req) {
+    return this.invoicesService.findAll(req.user);
   }
   @Public()
   @Get(':id')
@@ -36,12 +35,12 @@ export class InvoicesController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateInvoiceDto: UpdateInvoiceDto) {
-    return this.invoicesService.update(+id, updateInvoiceDto);
+  update(@Param('id') id: string, @Body() updateInvoiceDto: UpdateInvoiceDto,@Req() req) {
+    return this.invoicesService.update(id, updateInvoiceDto,req.user);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.invoicesService.remove(+id);
+  remove(@Param('id') id: string,@Req() req) {
+    return this.invoicesService.remove(id,req.user);
   }
 }

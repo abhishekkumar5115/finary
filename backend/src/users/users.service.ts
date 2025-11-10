@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { ConflictException, Injectable } from '@nestjs/common';
 import {InjectRepository} from '@nestjs/typeorm'
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -15,6 +15,8 @@ export class UsersService {
 
   async create(createUserDto: CreateUserDto) {
     const {email,full_name,password} = createUserDto;
+    const existingUser = await this.userRepository.findOne({where:{email:email}});
+    if(existingUser)throw new ConflictException("Email already Exist!");
     const hasshedPassword = await bcrypt.hash(password,10)
 
     //user entity

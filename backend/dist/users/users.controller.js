@@ -18,6 +18,7 @@ const users_service_1 = require("./users.service");
 const create_user_dto_1 = require("./dto/create-user.dto");
 const update_user_dto_1 = require("./dto/update-user.dto");
 const passport_1 = require("@nestjs/passport");
+const public_decorators_1 = require("../auth/public.decorators");
 let UsersController = class UsersController {
     usersService;
     constructor(usersService) {
@@ -47,6 +48,7 @@ let UsersController = class UsersController {
 };
 exports.UsersController = UsersController;
 __decorate([
+    (0, public_decorators_1.Public)(),
     (0, common_1.Post)(),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),

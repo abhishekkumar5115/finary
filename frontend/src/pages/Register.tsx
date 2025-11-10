@@ -1,5 +1,6 @@
 import React,{useState} from "react";
 import api from "../api/axios";
+import { Navigate, useNavigate } from "react-router-dom";
 
 const Register = ()=>{
     const [formData,setFormData] = useState({
@@ -7,7 +8,7 @@ const Register = ()=>{
         email: "",
         password: ""
     });
-
+    const navigate = useNavigate();
     const [message,setMessage] = useState("");
 
     const handleChange = (e:React.ChangeEvent<HTMLInputElement>)=>{
@@ -28,11 +29,15 @@ const Register = ()=>{
                 password : formData.password
             });
             setMessage("Registration Successfull!");
+            navigate("/login");
         }
         catch(error:any){
-            setMessage(
-                error.response?.data?.message || "Something went wrong during registration"
-            )
+            if(error.response?.status === 409){
+                setMessage("Email already exists. Please use another email.");
+            }
+            else{
+                setMessage("Registration failed. Try again later.");
+            }
         }
     };
 

@@ -1,6 +1,6 @@
 import {Entity,Column,PrimaryGeneratedColumn,CreateDateColumn,ManyToOne} from 'typeorm'
-import { User } from 'src/users/entities/user.entity'
-import { Client } from 'src/clients/entities/client.entity'
+import { User } from '../../users/entities/user.entity'
+import { Client } from '../../clients/entities/client.entity'
 import { Decimal128 } from 'typeorm/browser'
 
 export enum InvoiceStatus{

@@ -35,8 +35,8 @@ let ClientsController = class ClientsController {
     update(id, updateClientDto, req) {
         return this.clientsService.update(id, updateClientDto, req.user);
     }
-    remove(id) {
-        return this.clientsService.remove(id);
+    remove(id, req) {
+        return this.clientsService.remove(id, req.user);
     }
 };
 exports.ClientsController = ClientsController;
@@ -75,8 +75,9 @@ __decorate([
 __decorate([
     (0, common_1.Delete)(':id'),
     __param(0, (0, common_1.Param)('id')),
+    __param(1, (0, common_1.Req)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
+    __metadata("design:paramtypes", [String, Object]),
     __metadata("design:returntype", void 0)
 ], ClientsController.prototype, "remove", null);
 exports.ClientsController = ClientsController = __decorate([

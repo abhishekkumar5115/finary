@@ -1,5 +1,6 @@
 import React,{useState} from "react";
 import api from "../api/axios";
+import { Navigate, useNavigate } from "react-router-dom";
 
 const Login = () =>{
     const [formData,setFormData] = useState({
@@ -8,6 +9,8 @@ const Login = () =>{
     })
 
     const [message, setMessage] = useState("");
+    const navigate = useNavigate();
+
     const handleChange = (e:React.ChangeEvent<HTMLInputElement>) => {
         setFormData({
             ...formData,
@@ -30,6 +33,7 @@ const Login = () =>{
             if(token){
                 localStorage.setItem("access_token",token);
                 setMessage("Login successfull!");
+                navigate("/dashboard");
             }else{
                 setMessage("Login failed")
             }

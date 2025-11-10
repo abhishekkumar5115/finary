@@ -1,7 +1,7 @@
 import { Controller,Get,Body,Post } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { PaymentsService } from './payments.service';
-import { Public } from 'src/auth/public.decorators';
+import { Public } from '../auth/public.decorators';
 
 @Controller('payments')
 export class PaymentsController {

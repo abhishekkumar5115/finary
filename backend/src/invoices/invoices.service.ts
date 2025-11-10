@@ -1,11 +1,11 @@
-import { Injectable,NotFoundException } from '@nestjs/common';
+import { ForbiddenException, Injectable,NotFoundException, Req } from '@nestjs/common';
 import { CreateInvoiceDto } from './dto/create-invoice.dto';
 import { UpdateInvoiceDto } from './dto/update-invoice.dto';
-import { Client } from 'src/clients/entities/client.entity';
+import { Client } from '../clients/entities/client.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Invoice, InvoiceStatus } from './entities/invoice.entity';
-import { User } from 'src/users/entities/user.entity';
+import { User } from '../users/entities/user.entity';
 import { ConfigService } from '@nestjs/config';
 import Razorpay from 'razorpay';
 
@@ -69,18 +69,20 @@ export class InvoicesService {
       receipt : invoice.id,
     }
 
-    try{
+    try {
       const order = await this.razorpay.orders.create(options);
       return order;
-    }catch(error){
-      throw new error('Failed to create new order');
+    } catch (err) {
+      throw new Error('Failed to create new order');
     }
   }
 
-  async findAll() {
-    return await this.invoiceRepository.find({
-      relations : ['client']
-    })
+  async findAll(user: User) {
+   return await this.invoiceRepository.find({
+    where: { user: { id: user.id } },
+    relations: ['client', 'user'],
+    order: { created_at: 'DESC' },
+  });
   }
 
   findOne(id: string) {
@@ -90,12 +92,23 @@ export class InvoicesService {
     });
   }
 
-  update(id: number, updateInvoiceDto: UpdateInvoiceDto) {
-    return `This action updates a #${id} invoice`;
+  async update(id: string, updateInvoiceDto: UpdateInvoiceDto,user:any) {
+    const invoice = await this.invoiceRepository.findOne({
+      where:{id:id},
+      relations:['user']
+    })
+    if(!invoice)throw new NotFoundException("Invoice Not found!");
+    if(invoice.user.id !== user.id){
+      throw new ForbiddenException("You are not authorized to edit this!");
+    }
+    Object.assign(invoice,updateInvoiceDto);
+    return await this.invoiceRepository.save(invoice);
   }
 
   async updateInvoiceStatus(id:string,status:InvoiceStatus){
-    const invoice = await this.invoiceRepository.findOne({where:{id:id}});
+    const invoice = await this.invoiceRepository.findOne({
+      where:{id:id}
+    });
     if(!invoice){
       throw new NotFoundException("Invoice Not found!");
     }
@@ -103,7 +116,16 @@ export class InvoicesService {
     return this.invoiceRepository.save(invoice);
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} invoice`;
+  async remove(id: string,user:any) {
+     const invoice = await this.invoiceRepository.findOne({
+      where:{id:id},
+      relations:['user']
+    });
+    if(!invoice)throw new NotFoundException("Invoice Not found!");
+    if(invoice.user.id !== user.id){
+      throw new ForbiddenException("You are not authorized to delete this!");
+    }
+    await this.invoiceRepository.remove(invoice);
+    return {message:"Invoice deleted successfully!"};
   }
 }

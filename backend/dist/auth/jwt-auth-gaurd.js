@@ -9,19 +9,19 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.JwtAuthGaurd = void 0;
+exports.JwtAuthGuard = void 0;
 const common_1 = require("@nestjs/common");
 const core_1 = require("@nestjs/core");
 const passport_1 = require("@nestjs/passport");
 const public_decorators_1 = require("./public.decorators");
-let JwtAuthGaurd = class JwtAuthGaurd extends (0, passport_1.AuthGuard)('jwt') {
-    reflactor;
-    constructor(reflactor) {
+let JwtAuthGuard = class JwtAuthGuard extends (0, passport_1.AuthGuard)('jwt') {
+    reflector;
+    constructor(reflector) {
         super();
-        this.reflactor = reflactor;
+        this.reflector = reflector;
     }
     canActivate(context) {
-        const isPublic = this.reflactor.getAllAndOverride(public_decorators_1.Is_Public_Key, [
+        const isPublic = this.reflector.getAllAndOverride(public_decorators_1.IS_PUBLIC_KEY, [
             context.getHandler(),
             context.getClass()
         ]);
@@ -31,9 +31,9 @@ let JwtAuthGaurd = class JwtAuthGaurd extends (0, passport_1.AuthGuard)('jwt') {
         return super.canActivate(context);
     }
 };
-exports.JwtAuthGaurd = JwtAuthGaurd;
-exports.JwtAuthGaurd = JwtAuthGaurd = __decorate([
+exports.JwtAuthGuard = JwtAuthGuard;
+exports.JwtAuthGuard = JwtAuthGuard = __decorate([
     (0, common_1.Injectable)(),
     __metadata("design:paramtypes", [core_1.Reflector])
-], JwtAuthGaurd);
+], JwtAuthGuard);
 //# sourceMappingURL=jwt-auth-gaurd.js.map
