@@ -14,8 +14,8 @@ export declare class InvoicesService {
     constructor(clientRepository: Repository<Client>, invoiceRepository: Repository<Invoice>, userRepository: Repository<User>, configService: ConfigService);
     create(createInvoiceDto: CreateInvoiceDto, userPayload: any): Promise<Invoice>;
     createPaymentOrder(invoiceId: string): Promise<import("razorpay/dist/types/orders").Orders.RazorpayOrder>;
-    findAll(user: User): Promise<Invoice[]>;
-    findOne(id: string): Promise<Invoice | null>;
+    findAll(user: any): Promise<Invoice[]>;
+    findOne(id: string): Promise<Invoice>;
     update(id: string, updateInvoiceDto: UpdateInvoiceDto, user: any): Promise<Invoice>;
     updateInvoiceStatus(id: string, status: InvoiceStatus): Promise<Invoice>;
     remove(id: string, user: any): Promise<{

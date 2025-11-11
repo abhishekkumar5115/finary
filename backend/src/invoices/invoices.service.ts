@@ -77,19 +77,21 @@ export class InvoicesService {
     }
   }
 
-  async findAll(user: User) {
+  async findAll(user: any) {
    return await this.invoiceRepository.find({
-    where: { user: { id: user.id } },
+    where: { user: { id: user.user_id } },
     relations: ['client', 'user'],
     order: { created_at: 'DESC' },
   });
   }
 
-  findOne(id: string) {
-    return  this.invoiceRepository.findOne({
+  async findOne(id: string) {
+    const invoice = await  this.invoiceRepository.findOne({
       where:{id:id},
       relations:['client']
     });
+    if(!invoice)throw new NotFoundException("Invoice doesn't exist!");
+    return invoice;
   }
 
   async update(id: string, updateInvoiceDto: UpdateInvoiceDto,user:any) {

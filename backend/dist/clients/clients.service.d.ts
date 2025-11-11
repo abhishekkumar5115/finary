@@ -8,9 +8,9 @@ export declare class ClientsService {
     private userRepository;
     constructor(clientRepository: Repository<Client>, userRepository: Repository<User>);
     create(createClientDto: CreateClientDto, userPayload: any): Promise<Client>;
-    findAll(user: User): Promise<Client[]>;
+    findAll(user: any): Promise<Client[]>;
     findOne(id: string, user: any): string;
-    update(id: string, updateClientDto: UpdateClientDto, user: User): Promise<Client>;
+    update(id: string, updateClientDto: UpdateClientDto, user: any): Promise<Client>;
     remove(id: string, user: any): Promise<{
         message: string;
     }>;

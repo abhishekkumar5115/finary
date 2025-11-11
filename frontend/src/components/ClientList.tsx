@@ -1,49 +1,53 @@
-import { useState,useEffect } from "react";
+import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import api from "../api/axios";
 
 interface Client {
-    id: string,
-    name: string,
-    email:string
+  id: string;
+  name: string;
+  email: string;
 }
 
-const Clientlist = ()=>{
-    const [clients,setClients] = useState<Client[]>([])
-    const [loading,setLoading] = useState(true)
-    const [error,setError] = useState("")
+const ClientList = () => {
+  const [clients, setClients] = useState<Client[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
-    useEffect(()=>{
-        const fetchClients = async()=>{
-            try{
-                const response = await api.get('/clients');
-                setClients(response.data);
-            }catch(error:any){
-                setError("Failed to fetch clients. Please try again later.");
-            }finally{
-                setLoading(false)
-            }
-        }
-        fetchClients();
-    },[])
+  useEffect(() => {
+    const fetchClients = async () => {
+      try {
+        const response = await api.get("/clients");
+        setClients(response.data);
+      } catch (error: any) {
+        setError("Failed to fetch clients. Please try again later.");
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchClients();
+  }, []);
 
-    if (loading) {
+  if (loading) {
     return <p className="text-gray-600">Loading clients...</p>;
-    }
+  }
 
-    if (error) {
+  if (error) {
     return <p className="text-red-500">{error}</p>;
-    }
+  }
 
-    return (
-       <div className="p-8 bg-white rounded-xl shadow-md">
+  return (
+    <div className="p-8 bg-white rounded-xl shadow-md">
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-2xl font-semibold">Clients</h2>
-        <button className="bg-blue-600 text-white px-5 py-2 rounded-md hover:bg-blue-700 transition">
-          + Add New Client
-        </button>
-      </div>
 
-      {error && <p className="text-red-500">{error}</p>}
+        {/* ✅ Changed from button → Link */}
+        <Link
+          to="/clients/new"
+          className="bg-green-600 text-white px-5 py-2 rounded-md hover:bg-yellow-400 transition"
+        >
+          + Add New Client
+        </Link>
+      </div>
 
       <div className="overflow-x-auto">
         <table className="min-w-full border border-gray-200 rounded-lg">
@@ -69,6 +73,6 @@ const Clientlist = ()=>{
       </div>
     </div>
   );
-}
+};
 
-export default Clientlist;
+export default ClientList;

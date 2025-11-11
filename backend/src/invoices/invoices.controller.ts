@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete,Req } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete,Req,ParseUUIDPipe } from '@nestjs/common';
 import { InvoicesService } from './invoices.service';
 import { CreateInvoiceDto } from './dto/create-invoice.dto';
 import { UpdateInvoiceDto } from './dto/update-invoice.dto';
@@ -30,7 +30,7 @@ export class InvoicesController {
   }
   @Public()
   @Get(':id')
-  findOne(@Param('id') id: string) {
+  findOne(@Param('id', new ParseUUIDPipe({version:'4'})) id: string) {
     return this.invoicesService.findOne(id);
   }
 

@@ -28,13 +28,13 @@ let ClientsService = class ClientsService {
     create(createClientDto, userPayload) {
         const newClient = this.clientRepository.create({
             ...createClientDto,
-            user: { id: userPayload.userId },
+            user: { id: userPayload.user_id },
         });
         return this.clientRepository.save(newClient);
     }
     async findAll(user) {
         return await this.clientRepository.find({
-            where: { user: { id: user.id } },
+            where: { user: { id: user.user_id } },
             relations: ['user'],
         });
     }
@@ -44,7 +44,7 @@ let ClientsService = class ClientsService {
     async update(id, updateClientDto, user) {
         const client = await this.clientRepository.findOneBy({
             id,
-            user: { id: user.id },
+            user: { id: user.user_id },
         });
         if (!client) {
             throw new common_1.NotFoundException('Client not found');
@@ -54,7 +54,7 @@ let ClientsService = class ClientsService {
     }
     async remove(id, user) {
         const client = await this.clientRepository.findOne({
-            where: { id, user: { id: user.id } }
+            where: { id, user: { id: user.user_id } }
         });
         if (!client)
             throw new common_1.NotFoundException("Client Not Found!");

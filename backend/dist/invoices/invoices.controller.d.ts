@@ -7,7 +7,7 @@ export declare class InvoicesController {
     create(createInvoiceDto: CreateInvoiceDto, req: any): Promise<import("./entities/invoice.entity").Invoice>;
     createPaymentOrder(id: string): Promise<import("razorpay/dist/types/orders").Orders.RazorpayOrder>;
     findAll(req: any): Promise<import("./entities/invoice.entity").Invoice[]>;
-    findOne(id: string): Promise<import("./entities/invoice.entity").Invoice | null>;
+    findOne(id: string): Promise<import("./entities/invoice.entity").Invoice>;
     update(id: string, updateInvoiceDto: UpdateInvoiceDto, req: any): Promise<import("./entities/invoice.entity").Invoice>;
     remove(id: string, req: any): Promise<{
         message: string;

@@ -18,14 +18,14 @@ export class ClientsService {
   create(createClientDto: CreateClientDto, userPayload: any) {
   const newClient = this.clientRepository.create({
     ...createClientDto,
-    user: { id: userPayload.userId }, 
+    user: { id: userPayload.user_id }, 
   });
   return this.clientRepository.save(newClient);
   }
 
-  async findAll(user:User) {
+  async findAll(user:any) {
     return await this.clientRepository.find({
-    where: { user: { id: user.id } },
+    where: { user: { id: user.user_id} },
     relations: ['user'],
   });
   }
@@ -34,10 +34,10 @@ export class ClientsService {
     return `This action returns a #${id} client`;
   }
 
-  async update(id: string, updateClientDto: UpdateClientDto, user: User) {
+  async update(id: string, updateClientDto: UpdateClientDto, user: any) {
     const client = await this.clientRepository.findOneBy({
       id,
-      user: { id: user.id },
+      user: { id: user.user_id },
     });
 
     if (!client) {
@@ -50,7 +50,7 @@ export class ClientsService {
 
   async remove(id: string,user:any) {
     const client = await this.clientRepository.findOne({
-      where:{id,user:{id:user.id}}
+      where:{id,user:{id:user.user_id}}
     })
 
     if(!client)throw new NotFoundException("Client Not Found!")

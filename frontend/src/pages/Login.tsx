@@ -1,91 +1,128 @@
-import React,{useState} from "react";
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import api from "../api/axios";
-import { Navigate, useNavigate } from "react-router-dom";
 
-const Login = () =>{
-    const [formData,setFormData] = useState({
-        email:"",
-        password:""
-    })
+const Login = () => {
+  const [formData, setFormData] = useState({
+    email: "",
+    password: "",
+  });
+  const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState("");
+  const navigate = useNavigate();
 
-    const [message, setMessage] = useState("");
-    const navigate = useNavigate();
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    });
+  };
 
-    const handleChange = (e:React.ChangeEvent<HTMLInputElement>) => {
-        setFormData({
-            ...formData,
-            [e.target.name]:e.target.value
-        })
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setMessage("");
+    setLoading(true);
+
+    try {
+      const response = await api.post("/auth/login", formData);
+      const token = response.data?.access_token;
+
+      if (token) {
+        localStorage.setItem("access_token", token);
+        setMessage("Login successful!");
+        setTimeout(() => navigate("/dashboard"), 1000);
+      } else {
+        setMessage("Login failed. Please try again.");
+      }
+    } catch (err: any) {
+      if (err.response && err.response.status === 401) {
+        setMessage("Invalid email or password.");
+      } else {
+        setMessage("Something went wrong. Please try again.");
+      }
+    } finally {
+      setLoading(false);
     }
+  };
 
-    const handleSubmit = async(e:React.FormEvent) =>{
-        e.preventDefault()
-        setMessage("");
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
+      <div className="bg-white p-8 rounded-2xl shadow-lg w-full max-w-md">
+        <h2 className="text-2xl font-semibold text-gray-900 mb-6 text-center">
+          Welcome Back
+        </h2>
 
-        try{
-            const response = await api.post("/auth/login",{
-                email: formData.email,
-                password: formData.password
-            });
-
-            const token = response.data?.access_token;
-
-            if(token){
-                localStorage.setItem("access_token",token);
-                setMessage("Login successfull!");
-                navigate("/dashboard");
-            }else{
-                setMessage("Login failed")
-            }
-        }catch(error: any){
-            setMessage(
-                error.response?.data?.message || "Invalid email or Password"
-            )
-        }
-    }
-
-    return (
-        <div className="flex justify-center items-center h-screen bg-gray-100">
-            <form
-            onSubmit={handleSubmit}
-            className="bg-white p-8 rounded-2xl shadow-md w-300"
+        <form onSubmit={handleSubmit} className="space-y-5">
+          {/* Email */}
+          <div>
+            <label
+              htmlFor="email"
+              className="block text-gray-700 font-medium mb-2"
             >
-                <h2 className="text-2xl font-semibold text-center mb-6">Login</h2>
-                <div className="mb-4">
-                    <label className="block text-gray-600 mb-2">Email</label>
-                    <input
-                    type="email"
-                    name="email"
-                    value={formData.email}
-                    onChange={handleChange}
-                    className="w-full p-2 border text-gray-900 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
-                    required
-                    />
-                </div>
-                <div className="mb-4">
-                    <label className="block text-gray-600 mb-2">Password</label>
-                    <input
-                    type="text"
-                    name="password"
-                    value={formData.password}
-                    onChange={handleChange}
-                    className="w-full p-2 text-gray-900 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
-                    required
-                    />
-                </div>
-                <button
-                type="submit"
-                className="w-full bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600 transition"
-                >
-                Login
-                </button>
+              Email Address
+            </label>
+            <input
+              type="email"
+              name="email"
+              id="email"
+              value={formData.email}
+              onChange={handleChange}
+              required
+              className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 outline-none text-gray-900"
+              placeholder="Enter your email"
+            />
+          </div>
 
-                {message && (
-                <p className="text-center text-sm text-red-500 mt-4">{message}</p>
-                )}
-            </form>
-        </div>
-    )
-}
+          {/* Password */}
+          <div>
+            <label
+              htmlFor="password"
+              className="block text-gray-700 font-medium mb-2"
+            >
+              Password
+            </label>
+            <input
+              type="password"
+              name="password"
+              id="password"
+              value={formData.password}
+              onChange={handleChange}
+              required
+              className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 outline-none text-gray-900"
+              placeholder="Enter your password"
+            />
+          </div>
 
-export default  Login;
+          {message && (
+            <p
+              className={`text-sm text-center ${
+                message.includes("success")
+                  ? "text-green-600"
+                  : "text-red-500"
+              }`}
+            >
+              {message}
+            </p>
+          )}
+
+          <button
+            type="submit"
+            disabled={loading}
+            className="w-full bg-green-600 text-white py-2 rounded-lg hover:bg-yellow-400 transition disabled:opacity-50"
+          >
+            {loading ? "Logging in..." : "Login"}
+          </button>
+        </form>
+
+        <button
+          onClick={() => navigate("/register")}
+          className="w-full text-blue-600 mt-4 hover:underline text-sm"
+        >
+          Don’t have an account? Register →
+        </button>
+      </div>
+    </div>
+  );
+};
+
+export default Login;

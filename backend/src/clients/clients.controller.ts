@@ -13,7 +13,7 @@ export class ClientsController {
 
   @Post()
   create(@Body() createClientDto: CreateClientDto,@Req() req) {
-    return this.clientsService.create(createClientDto, req.user);
+    return this.clientsService.create(createClientDto, req.user)
   }
 
   
