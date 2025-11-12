@@ -26,7 +26,7 @@ const AddNewClient = () => {
     setLoading(true);
 
     try {
-      const response = await api.post("/clients", formData);
+      await api.post("/clients", formData);
       setSuccess("Client added successfully!");
       setTimeout(() => navigate("/dashboard"), 1000);
     } catch (err: any) {
