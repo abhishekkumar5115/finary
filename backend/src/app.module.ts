@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+import { APP_GUARD } from '@nestjs/core';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -11,6 +12,7 @@ import { ClientsModule } from './clients/clients.module';
 import { InvoicesModule } from './invoices/invoices.module';
 import { Invoice } from './invoices/entities/invoice.entity';
 import { PaymentsModule } from './payments/payments.module';
+import {JwtAuthGuard} from './auth/jwt-auth-gaurd'
 
 
 
@@ -28,7 +30,8 @@ import { PaymentsModule } from './payments/payments.module';
         password: configService.get<string>('POSTGRES_PASSWORD'), // Use ConfigService
         database: configService.get<string>('POSTGRES_DB'),       // Use ConfigService
         entities: [User, Client, Invoice],
-        synchronize: true, // Note: Set to false in production
+        synchronize: configService.get<string>('NODE_ENV') === 'development', 
+        ssl: { rejectUnauthorized: false },
       }),
     }),
     UsersModule,
