@@ -1,0 +1,43 @@
+# === 1. The Deployment ===
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: finary-backend-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: finary-backend
+  template:
+    metadata:
+      labels:
+        app: finary-backend
+    spec:
+      containers:
+      - name: finary-backend
+        # --- YOUR DOCKER HUB IMAGE (with the 0.0.0.0 fix) ---
+        image: abhishek2803/finary-backend:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 3000
+        envFrom:
+        - secretRef:
+            name: finary-secrets
+
+---
+# === 2. The Service ===
+apiVersion: v1
+kind: Service
+metadata:
+  name: finary-backend-service
+spec:
+  # --- This creates an Azure Load Balancer ---
+  type: LoadBalancer
+  selector:
+    app: finary-backend
+  ports:
+  - protocol: TCP
+    # The Load Balancer listens on port 80
+    port: 80
+    # It sends traffic to your container's port 3000
+    targetPort: 3000
