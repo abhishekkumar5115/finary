@@ -1,5 +1,4 @@
 import { Module } from '@nestjs/common';
-import { APP_GUARD } from '@nestjs/core';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -13,6 +12,7 @@ import { InvoicesModule } from './invoices/invoices.module';
 import { Invoice } from './invoices/entities/invoice.entity';
 import { PaymentsModule } from './payments/payments.module';
 import {JwtAuthGuard} from './auth/jwt-auth-gaurd'
+import { EmailModule } from './email/email.module';
 
 
 
@@ -38,7 +38,8 @@ import {JwtAuthGuard} from './auth/jwt-auth-gaurd'
     AuthModule,
     ClientsModule,
     InvoicesModule,
-    PaymentsModule
+    PaymentsModule,
+    EmailModule
   ],
   controllers: [AppController],
   providers: [AppService],

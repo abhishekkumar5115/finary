@@ -16,6 +16,12 @@ export class User {
     @Column()
     full_name:string;
 
+    @Column({ default: false })
+    is_email_verified: boolean;
+
+    @Column({type:'text', nullable: true })
+    verification_token: string | null;
+
     @CreateDateColumn()
     created_at:Date;
 

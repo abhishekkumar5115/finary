@@ -2,4 +2,3 @@ node_modules
 .env
 azure-github.txt
 backend-secrets.yaml
-*.yaml

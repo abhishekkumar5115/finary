@@ -1,11 +1,18 @@
-import { Controller, UnauthorizedException,Post,Body,HttpCode,HttpStatus } from '@nestjs/common';
+import { Controller, UnauthorizedException,Post,Body,HttpCode,HttpStatus, Get, Query } from '@nestjs/common';
 import {AuthService} from './auth.service';
 import { LoginUserDto } from '../users/dto/login-user.dto';
+import { CreateUserDto } from '../users/dto/create-user.dto';
 import { Public } from './public.decorators';
 
 @Controller('auth')
 export class AuthController {
     constructor(private AuthService:AuthService){}
+
+    @Public()
+    @Post('register')
+    async register(@Body() dto: CreateUserDto) {
+    return this.AuthService.register(dto);
+    }
 
     @HttpCode(HttpStatus.OK)
     @Public()
@@ -18,4 +25,15 @@ export class AuthController {
         return this.AuthService.login(user);
     }
 
+    @Public()
+    @Get('/verify-email')
+    async verifyEmail(@Query('token') token : string){
+        return this.AuthService.verifyEmail(token);
+    }
+
+    @Public()
+    @Post('/resend-email-verification')
+    async resendEmailVerification(@Body('email') email:string){
+        return this.AuthService.resendEmailVerification(email);
+    }
 }

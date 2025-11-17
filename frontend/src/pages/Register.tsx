@@ -25,9 +25,9 @@ const Register = () => {
     setLoading(true);
 
     try {
-      await api.post("/users", formData);
+      await api.post("/auth/register", formData);
       setMessage("Registration successful!");
-      setTimeout(() => navigate("/login"), 1000);
+      setTimeout(() => navigate("/verify-email"), 1000);
     } catch (error: any) {
       if (error.response?.status === 409) {
         setMessage("Email already exists. Please use another email.");
