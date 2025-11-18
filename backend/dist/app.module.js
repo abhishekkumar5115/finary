@@ -40,6 +40,7 @@ exports.AppModule = AppModule = __decorate([
                     database: configService.get('POSTGRES_DB'),
                     entities: [user_entity_1.User, client_entity_1.Client, invoice_entity_1.Invoice],
                     synchronize: configService.get('NODE_ENV') === 'development',
+                    ssl: { rejectUnauthorized: false },
                 }),
             }),
             users_module_1.UsersModule,
