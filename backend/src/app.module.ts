@@ -30,7 +30,7 @@ import { EmailModule } from './email/email.module';
         password: configService.get<string>('POSTGRES_PASSWORD'), // Use ConfigService
         database: configService.get<string>('POSTGRES_DB'),       // Use ConfigService
         entities: [User, Client, Invoice],
-        synchronize: configService.get<string>('NODE_ENV') === 'development', 
+        synchronize: true,  //configService.get<string>('NODE_ENV') === 'development', 
         ssl: { rejectUnauthorized: false },
       }),
     }),
