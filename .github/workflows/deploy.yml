@@ -67,6 +67,7 @@ jobs:
           --from-literal=RAZORPAY_KEY_ID='${{ secrets.RAZORPAY_KEY_ID }}' \
           --from-literal=RAZORPAY_KEY_SECRET='${{ secrets.RAZORPAY_KEY_SECRET }}' \
           --from-literal=RESEND_API_KEY='${{ secrets.RESEND_API_KEY }}' \
+          --from-literal=PGSSLMODE='require' \
           --from-literal=NODE_ENV='production'
 
     - name: Deploy YAML files
