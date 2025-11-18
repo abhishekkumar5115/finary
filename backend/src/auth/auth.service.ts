@@ -46,10 +46,12 @@ export class AuthService {
       otp_expires_at: expirationTime,
     });
 
+    const savedUser = await this.userRepository.save(user);
+
     try {
-      await this.emailService.sendOtpEmail(user.email, otp);
+      await this.emailService.sendOtpEmail(savedUser.email, otp);
     } catch (error) {
-      console.error('Failed to send email for user:', user.id);
+      console.error('Failed to send email for user:', savedUser.id);
     }
 
     return {
