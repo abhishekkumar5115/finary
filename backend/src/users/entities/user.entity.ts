@@ -19,8 +19,11 @@ export class User {
     @Column({ default: false })
     is_email_verified: boolean;
 
-    @Column({type:'text', nullable: true })
-    verification_token: string | null;
+    @Column({ nullable: true })
+    otp_code: string | null; 
+
+    @Column({ type: 'timestamp', nullable: true })
+    otp_expires_at: Date | null;
 
     @CreateDateColumn()
     created_at:Date;

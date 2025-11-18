@@ -7,7 +7,7 @@ import Dashboard from './pages/Dashboard.tsx'
 import ProtectedRoutes from './components/ProtectedRoute.tsx'
 import AddNewClient from './pages/AddNewClient.tsx'
 import CheckYourEmail from './pages/CheckYourEmail.tsx'
-import VerifyEmail from './pages/VerifyEmail.tsx'
+import VerifyOtp from './pages/VerifyOtp.tsx'
 
 const CreateInvoice = lazy(() => import('./pages/CreateInvoice.tsx') as Promise<{ default: React.ComponentType<any> }>);
 function App() {
@@ -34,7 +34,7 @@ function App() {
         />
         <Route path="/" element={<Navigate to="/dashboard" replace />} />
         <Route path='/check-your-email' element={<CheckYourEmail></CheckYourEmail>}/>
-        <Route path='/verify-email'element={<VerifyEmail/>}/>
+        <Route path='/verify-otp'element={<VerifyOtp/>}/>
         <Route path='/register' element={<Register/>} />
         <Route path='/login' element={<Login/>} />
         <Route path='/pay/:invoiceId' element={<PayInvoice/>} />

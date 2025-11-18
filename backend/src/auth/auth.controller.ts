@@ -26,14 +26,14 @@ export class AuthController {
     }
 
     @Public()
-    @Get('/verify-email')
-    async verifyEmail(@Query('token') token : string){
-        return this.AuthService.verifyEmail(token);
+    @Post('/verify-otp')
+    async verifyOtp(@Body() body :{email:string, otp:string}){
+        return this.AuthService.verifyOtp(body.email,body.otp);
     }
 
     @Public()
-    @Post('/resend-email-verification')
-    async resendEmailVerification(@Body('email') email:string){
-        return this.AuthService.resendEmailVerification(email);
+    @Post('/resend-otp')
+    async resendOtpVerification(@Body('email') email:string){
+        return this.AuthService.resendOtpVerification(email);
     }
 }

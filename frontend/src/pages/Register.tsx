@@ -26,8 +26,8 @@ const Register = () => {
 
     try {
       await api.post("/auth/register", formData);
-      setMessage("Registration successful!");
-      setTimeout(() => navigate("/verify-email"), 1000);
+      setMessage("Registration successful! Redirecting to OTP...");
+      setTimeout(() => navigate("/verify-otp",{state:{email : formData.email}}), 1000);
     } catch (error: any) {
       if (error.response?.status === 409) {
         setMessage("Email already exists. Please use another email.");
