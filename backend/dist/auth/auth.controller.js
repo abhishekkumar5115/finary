@@ -32,11 +32,11 @@ let AuthController = class AuthController {
             throw new common_1.UnauthorizedException("Invalid credentials");
         return this.AuthService.login(user);
     }
-    async verifyEmail(token) {
-        return this.AuthService.verifyEmail(token);
+    async verifyOtp(body) {
+        return this.AuthService.verifyOtp(body.email, body.otp);
     }
-    async resendEmailVerification(email) {
-        return this.AuthService.resendEmailVerification(email);
+    async resendOtpVerification(email) {
+        return this.AuthService.resendOtpVerification(email);
     }
 };
 exports.AuthController = AuthController;
@@ -59,20 +59,20 @@ __decorate([
 ], AuthController.prototype, "signIn", null);
 __decorate([
     (0, public_decorators_1.Public)(),
-    (0, common_1.Get)('/verify-email'),
-    __param(0, (0, common_1.Query)('token')),
+    (0, common_1.Post)('/verify-otp'),
+    __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
+    __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
-], AuthController.prototype, "verifyEmail", null);
+], AuthController.prototype, "verifyOtp", null);
 __decorate([
     (0, public_decorators_1.Public)(),
-    (0, common_1.Post)('/resend-email-verification'),
+    (0, common_1.Post)('/resend-otp'),
     __param(0, (0, common_1.Body)('email')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Promise)
-], AuthController.prototype, "resendEmailVerification", null);
+], AuthController.prototype, "resendOtpVerification", null);
 exports.AuthController = AuthController = __decorate([
     (0, common_1.Controller)('auth'),
     __metadata("design:paramtypes", [auth_service_1.AuthService])

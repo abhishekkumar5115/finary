@@ -51,7 +51,6 @@ const users_service_1 = require("../users/users.service");
 const jwt_1 = require("@nestjs/jwt");
 const email_service_1 = require("../email/email.service");
 const user_entity_1 = require("../users/entities/user.entity");
-const crypto = __importStar(require("crypto"));
 const bcrypt = __importStar(require("bcrypt"));
 const typeorm_1 = require("typeorm");
 const typeorm_2 = require("@nestjs/typeorm");
@@ -73,34 +72,42 @@ let AuthService = class AuthService {
         if (existingUser) {
             throw new common_1.ConflictException('Email already exists');
         }
-        const token = crypto.randomBytes(32).toString('hex');
+        const otp = Math.floor(100000 + Math.random() * 900000).toString();
+        const expirationTime = new Date(Date.now() + 10 * 60 * 1000);
         const hashedPassword = await bcrypt.hash(createUserDto.password, 10);
         const user = await this.userRepository.create({
             ...createUserDto,
             password: hashedPassword,
             is_email_verified: false,
-            verification_token: token
+            otp_code: otp,
+            otp_expires_at: expirationTime,
         });
         const savedUser = await this.userRepository.save(user);
         try {
-            await this.emailService.sendVerificationEmail(savedUser.email, token);
+            await this.emailService.sendOtpEmail(savedUser.email, otp);
         }
         catch (error) {
             console.error('Failed to send email for user:', savedUser.id);
         }
-        const { password, verification_token, ...safeUser } = savedUser;
-        return safeUser;
+        return {
+            message: 'OTP sent to email. Please verify to continue.',
+        };
     }
-    async verifyEmail(token) {
+    async verifyOtp(email, otp) {
         const user = await this.userRepository.findOne({
-            where: { verification_token: token }
+            where: { email },
         });
         if (!user)
-            throw new common_1.UnauthorizedException("Invalid or expired verification token.");
+            throw new common_1.UnauthorizedException('User Not Found!');
+        if (user.otp_code !== otp)
+            throw new common_1.UnauthorizedException('Invalid OTP');
+        if (!user.otp_expires_at || new Date() > user.otp_expires_at)
+            throw new common_1.UnauthorizedException('OTP has Expired!');
         user.is_email_verified = true;
-        user.verification_token = null;
+        user.otp_code = null;
+        user.otp_expires_at = null;
         await this.userRepository.save(user);
-        return { message: "Email verified successfully." };
+        return { message: 'Email verified successfully.' };
     }
     async validateUser(LoginUserDto) {
         const user = await this.userService.findOneEmail(LoginUserDto.email);
@@ -110,7 +117,7 @@ let AuthService = class AuthService {
             throw new common_1.UnauthorizedException('Please verify your email first.');
         const validPassword = await bcrypt.compare(LoginUserDto.password, user.password);
         if (!validPassword)
-            throw new common_1.UnauthorizedException("Incorrect Password");
+            throw new common_1.UnauthorizedException('Incorrect Password');
         const { password, ...result } = user;
         return result;
     }
@@ -120,23 +127,25 @@ let AuthService = class AuthService {
             access_token: this.jwtService.sign(payload),
         };
     }
-    async resendEmailVerification(email) {
+    async resendOtpVerification(email) {
         const user = await this.userRepository.findOne({
-            where: { email: email }
+            where: { email: email },
         });
         if (!user) {
-            throw new common_1.UnauthorizedException("User does not exist.");
+            throw new common_1.UnauthorizedException('User does not exist.');
         }
-        const newToken = await crypto.randomBytes(32).toString('hex');
-        user.verification_token = newToken;
+        const newOtp = Math.floor(100000 + Math.random() * 900000).toString();
+        const expiresAt = new Date(Date.now() + 10 * 60 * 1000);
+        user.otp_code = newOtp;
+        user.otp_expires_at = expiresAt;
         await this.userRepository.save(user);
         try {
-            await this.emailService.sendVerificationEmail(user.email, newToken);
+            await this.emailService.sendOtpEmail(user.email, newOtp);
         }
         catch (error) {
-            console.error('Failed to resend verification email:', user.id);
+            console.error("Failed to resend OTP email for user:", user.id);
         }
-        return { message: "Verification email resent." };
+        return { message: "OTP resent successfully." };
     }
 };
 exports.AuthService = AuthService;

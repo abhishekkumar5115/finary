@@ -12,22 +12,16 @@ export declare class AuthService {
     private userRepository;
     constructor(userService: UsersService, jwtService: JwtService, emailService: EmailService, userRepository: Repository<User>);
     register(createUserDto: CreateUserDto): Promise<{
-        id: string;
-        email: string;
-        full_name: string;
-        is_email_verified: boolean;
-        created_at: Date;
-        clients: import("../clients/entities/client.entity").Client[];
-        invoices: import("../invoices/entities/invoice.entity").Invoice[];
+        message: string;
     }>;
-    verifyEmail(token: string): Promise<{
+    verifyOtp(email: string, otp: string): Promise<{
         message: string;
     }>;
     validateUser(LoginUserDto: LoginUserDto): Promise<any>;
     login(user: any): Promise<{
         access_token: string;
     }>;
-    resendEmailVerification(email: string): Promise<{
+    resendOtpVerification(email: string): Promise<{
         message: string;
     }>;
 }

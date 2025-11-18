@@ -5,21 +5,18 @@ export declare class AuthController {
     private AuthService;
     constructor(AuthService: AuthService);
     register(dto: CreateUserDto): Promise<{
-        id: string;
-        email: string;
-        full_name: string;
-        is_email_verified: boolean;
-        created_at: Date;
-        clients: import("../clients/entities/client.entity").Client[];
-        invoices: import("../invoices/entities/invoice.entity").Invoice[];
+        message: string;
     }>;
     signIn(loginUserDto: LoginUserDto): Promise<{
         access_token: string;
     }>;
-    verifyEmail(token: string): Promise<{
+    verifyOtp(body: {
+        email: string;
+        otp: string;
+    }): Promise<{
         message: string;
     }>;
-    resendEmailVerification(email: string): Promise<{
+    resendOtpVerification(email: string): Promise<{
         message: string;
     }>;
 }

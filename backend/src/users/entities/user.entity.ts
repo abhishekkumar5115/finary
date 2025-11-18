@@ -1,6 +1,7 @@
 import {Entity,Column,PrimaryGeneratedColumn,CreateDateColumn,OneToMany} from 'typeorm'
 import {Client} from '../../clients/entities/client.entity'
 import { Invoice } from '../../invoices/entities/invoice.entity';
+import { text } from 'stream/consumers';
 
 @Entity('users')
 export class User {
@@ -19,7 +20,7 @@ export class User {
     @Column({ default: false })
     is_email_verified: boolean;
 
-    @Column({ nullable: true })
+    @Column({type:'text' , nullable: true })
     otp_code: string | null; 
 
     @Column({ type: 'timestamp', nullable: true })

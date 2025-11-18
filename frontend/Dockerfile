@@ -13,6 +13,9 @@ RUN npm install
 # Copy the rest of the source code
 COPY . .
 
+ARG VITE_API_BASE_URL
+ENV VITE_API_BASE_URL=$VITE_API_BASE_URL
+
 # Build the React application
 RUN npm run build
 

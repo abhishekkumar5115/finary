@@ -19,7 +19,8 @@ let User = class User {
     password;
     full_name;
     is_email_verified;
-    verification_token;
+    otp_code;
+    otp_expires_at;
     created_at;
     clients;
     invoices;
@@ -48,7 +49,11 @@ __decorate([
 __decorate([
     (0, typeorm_1.Column)({ type: 'text', nullable: true }),
     __metadata("design:type", Object)
-], User.prototype, "verification_token", void 0);
+], User.prototype, "otp_code", void 0);
+__decorate([
+    (0, typeorm_1.Column)({ type: 'timestamp', nullable: true }),
+    __metadata("design:type", Object)
+], User.prototype, "otp_expires_at", void 0);
 __decorate([
     (0, typeorm_1.CreateDateColumn)(),
     __metadata("design:type", Date)

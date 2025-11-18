@@ -20,23 +20,23 @@ let EmailService = class EmailService {
         this.configService = configService;
         this.resend = new resend_1.Resend(this.configService.get('RESEND_API_KEY'));
     }
-    async sendVerificationEmail(to, from) {
-        const verificationLink = `http://http://4.224.156.116/verify-email?token=&{token}`;
+    async sendOtpEmail(to, otp) {
         try {
             await this.resend.emails.send({
                 from: 'onboarding@resend.dev',
                 to: to,
-                subject: 'Welcome to Finary! Please verify your email.',
+                subject: 'Welcome to Finary! Your Finary Verification Code',
                 html: `
-                  <h1>Welcome to Finary!</h1>
-                  <p>Click the link below to verify your email address:</p>
-                  <a href="${verificationLink}">Verify My Email</a>
+                <h1>Your Finary Verification Code</h1>
+                <p>Your one-time password is:</p>
+                <h2 style="font-size: 28px; letter-spacing: 4px;">${otp}</h2>
+                <p>This code will expire in 10 minutes.</p>
                 `,
             });
         }
         catch (error) {
             console.error('Email sending failed:', error);
-            throw new Error('Failed to send verification email.');
+            throw new Error('Failed to send OTP email.');
         }
     }
 };
