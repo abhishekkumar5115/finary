@@ -1,11 +1,14 @@
-import {Entity,Column,PrimaryGeneratedColumn,CreateDateColumn,OneToMany} from 'typeorm'
+import { Entity, Column, PrimaryColumn, CreateDateColumn, OneToMany } from 'typeorm'
 import {Client} from '../../clients/entities/client.entity'
 import { Invoice } from '../../invoices/entities/invoice.entity';
 import { text } from 'stream/consumers';
 
 @Entity('users')
 export class User {
-    @PrimaryGeneratedColumn('uuid')
+    @PrimaryColumn('uuid', {
+     default: () => 'gen_random_uuid()', 
+     name: 'id',
+      })
     id: string;
 
     @Column({unique:true})

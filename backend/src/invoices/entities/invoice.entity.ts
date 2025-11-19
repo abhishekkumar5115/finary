@@ -1,4 +1,4 @@
-import {Entity,Column,PrimaryGeneratedColumn,CreateDateColumn,ManyToOne} from 'typeorm'
+import {Entity,Column,PrimaryColumn,CreateDateColumn,ManyToOne} from 'typeorm'
 import { User } from '../../users/entities/user.entity'
 import { Client } from '../../clients/entities/client.entity'
 import { Decimal128 } from 'typeorm/browser'
@@ -12,8 +12,11 @@ export enum InvoiceStatus{
 
 @Entity('invoices')
 export class Invoice {
-    @PrimaryGeneratedColumn('uuid')
-    id:string
+    @PrimaryColumn('uuid', {
+         default: () => 'gen_random_uuid()', 
+         name: 'id',
+          })
+        id: string;
 
     @Column()
     invoice_number:string

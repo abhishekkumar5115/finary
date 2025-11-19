@@ -1,11 +1,14 @@
-import {Entity,Column,PrimaryGeneratedColumn,ManyToOne, JoinColumn,OneToMany} from 'typeorm';
+import {Entity,Column,PrimaryColumn,ManyToOne, JoinColumn,OneToMany} from 'typeorm';
 import {User} from '../../users/entities/user.entity'
 import { Invoice } from '../../invoices/entities/invoice.entity';
 
 @Entity('clients')
 export class Client {
-    @PrimaryGeneratedColumn('uuid')
-    id:string
+    @PrimaryColumn('uuid', {
+         default: () => 'gen_random_uuid()', 
+         name: 'id',
+          })
+        id: string;
 
     @Column()
     name:string
