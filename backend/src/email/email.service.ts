@@ -16,7 +16,7 @@ export class EmailService {
 
         try {
             await this.resend.emails.send({
-                from: 'onboarding@resend.dev',
+                from: 'welcome@finary.shop',
                 to: to,
                 subject: 'Welcome to Finary! Your Finary Verification Code',
                 html:`
