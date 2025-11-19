@@ -1,0 +1,19 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: finary-tls
+  namespace: default
+spec:
+  secretName: finary-tls-secret
+  issuerRef:
+    name: letsencrypt-prod
+    kind: ClusterIssuer
+  commonName: finary.shop
+  dnsNames:
+    - finary.shop
+    - api.finary.shop
+    - www.finary.shop
+  # Set the private key algorithm to match Let's Encrypt requirements
+  privateKey:
+    algorithm: RSA
+    size: 2048

@@ -1,0 +1,28 @@
+# === 1. Backend Service (LoadBalancer) ===
+apiVersion: v1
+kind: Service
+metadata:
+  name: finary-backend-service
+spec:
+  # This creates a NEW External IP for your backend
+  type: LoadBalancer
+  selector:
+    app: finary-backend
+  ports:
+  - port: 80
+    targetPort: 3000
+
+---
+# === 2. Frontend Service (LoadBalancer) ===
+apiVersion: v1
+kind: Service
+metadata:
+  name: finary-frontend-service
+spec:
+  # This creates a NEW External IP for your frontend
+  type: LoadBalancer
+  selector:
+    app: finary-frontend
+  ports:
+  - port: 80
+    targetPort: 80
