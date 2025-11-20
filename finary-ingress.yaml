@@ -2,22 +2,17 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: finary-ingress
-  namespace: default
   annotations:
-    # CRITICAL: This is the only SSL redirect annotation needed for NGINX
-    nginx.ingress.kubernetes.io/force-ssl-redirect: "true" 
-    # Use our frontend service as the default for any unmatched traffic
-    nginx.ingress.kubernetes.io/default-backend: finary-frontend-service
+    cert-manager.io/cluster-issuer: letsencrypt-dns
 spec:
   ingressClassName: nginx
   tls:
     - hosts:
-      - finary.shop
-      - www.finary.shop
-      - api.finary.shop
-      secretName: finary-tls-secret # This points to the secret created by the Certificate resource
+        - finary.shop
+        - www.finary.shop
+        - api.finary.shop
+      secretName: finary-tls-secret
   rules:
-    # --- Rule 1: Frontend Traffic ---
     - host: finary.shop
       http:
         paths:
@@ -28,20 +23,6 @@ spec:
                 name: finary-frontend-service
                 port:
                   number: 80
-
-    # --- Rule 2: WWW Traffic (Redirects to finary.shop, then HTTPS is forced)
-    - host: www.finary.shop
-      http:
-        paths:
-          - path: /
-            pathType: Prefix
-            backend:
-              service:
-                name: finary-frontend-service
-                port:
-                  number: 80
-    
-    # --- Rule 3: Backend API Traffic ---
     - host: api.finary.shop
       http:
         paths:

@@ -5,10 +5,10 @@ import { Invoice } from '../../invoices/entities/invoice.entity';
 @Entity('clients')
 export class Client {
     @PrimaryColumn('uuid', {
-         default: () => 'gen_random_uuid()', 
-         name: 'id',
-          })
-        id: string;
+        default: () => 'gen_random_uuid()', 
+        name: 'id',
+    })
+    id: string;
 
     @Column()
     name:string
