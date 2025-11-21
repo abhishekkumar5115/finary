@@ -22,7 +22,10 @@ let Client = class Client {
 };
 exports.Client = Client;
 __decorate([
-    (0, typeorm_1.PrimaryGeneratedColumn)('uuid'),
+    (0, typeorm_1.PrimaryColumn)('uuid', {
+        default: () => 'gen_random_uuid()',
+        name: 'id',
+    }),
     __metadata("design:type", String)
 ], Client.prototype, "id", void 0);
 __decorate([

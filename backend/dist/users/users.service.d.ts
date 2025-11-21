@@ -6,9 +6,10 @@ export declare class UsersService {
     private userRepository;
     constructor(userRepository: Repository<User>);
     create(createUserDto: CreateUserDto): Promise<User>;
-    findAll(): string;
+    userBankAccount(userId: string, vpa: string): Promise<User>;
+    findAll(): Promise<User[]>;
     findOneEmail(email: string): Promise<User | null>;
     findOneById(id: string): Promise<User | null>;
-    update(id: number, updateUserDto: UpdateUserDto): string;
-    remove(id: number): string;
+    update(id: string, updateUserDto: UpdateUserDto): Promise<User>;
+    remove(id: string): Promise<import("typeorm").DeleteResult>;
 }

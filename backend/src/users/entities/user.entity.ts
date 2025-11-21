@@ -6,9 +6,9 @@ import { text } from 'stream/consumers';
 @Entity('users')
 export class User {
     @PrimaryColumn('uuid', {
-     default: () => 'gen_random_uuid()', 
-     name: 'id',
-      })
+    default: () => 'gen_random_uuid()', 
+    name: 'id',
+    })
     id: string;
 
     @Column({unique:true})
@@ -28,6 +28,9 @@ export class User {
 
     @Column({ type: 'timestamp', nullable: true })
     otp_expires_at: Date | null;
+
+    @Column({ nullable: true })
+    vpa_address: string;
 
     @CreateDateColumn()
     created_at:Date;

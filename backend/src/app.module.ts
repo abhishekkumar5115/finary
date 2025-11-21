@@ -11,7 +11,6 @@ import { ClientsModule } from './clients/clients.module';
 import { InvoicesModule } from './invoices/invoices.module';
 import { Invoice } from './invoices/entities/invoice.entity';
 import { PaymentsModule } from './payments/payments.module';
-import {JwtAuthGuard} from './auth/jwt-auth-gaurd'
 import { EmailModule } from './email/email.module';
 
 
@@ -31,7 +30,7 @@ import { EmailModule } from './email/email.module';
         database: configService.get<string>('POSTGRES_DB'),       // Use ConfigService
         entities: [User, Client, Invoice],
         synchronize: true,  //configService.get<string>('NODE_ENV') === 'development', 
-        ssl: { rejectUnauthorized: false },
+        // ssl: { rejectUnauthorized: false },
       }),
     }),
     UsersModule,

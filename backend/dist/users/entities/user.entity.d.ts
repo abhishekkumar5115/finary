@@ -8,6 +8,7 @@ export declare class User {
     is_email_verified: boolean;
     otp_code: string | null;
     otp_expires_at: Date | null;
+    vpa_address: string;
     created_at: Date;
     clients: Client[];
     invoices: Invoice[];

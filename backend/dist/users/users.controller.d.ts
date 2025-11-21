@@ -6,9 +6,10 @@ export declare class UsersController {
     constructor(usersService: UsersService);
     create(createUserDto: CreateUserDto): Promise<import("./entities/user.entity").User>;
     getProfile(req: any): Promise<import("./entities/user.entity").User | null>;
-    findAll(): string;
+    findAll(): Promise<import("./entities/user.entity").User[]>;
+    addBankAccount(req: any, body: any): Promise<import("./entities/user.entity").User>;
     findOneEmail(email: string): Promise<import("./entities/user.entity").User | null>;
     findOneId(id: string): Promise<import("./entities/user.entity").User | null>;
-    update(id: string, updateUserDto: UpdateUserDto): string;
-    remove(id: string): string;
+    update(id: string, updateUserDto: UpdateUserDto): Promise<import("./entities/user.entity").User>;
+    remove(id: string): Promise<import("typeorm").DeleteResult>;
 }

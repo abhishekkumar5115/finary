@@ -21,13 +21,17 @@ let User = class User {
     is_email_verified;
     otp_code;
     otp_expires_at;
+    vpa_address;
     created_at;
     clients;
     invoices;
 };
 exports.User = User;
 __decorate([
-    (0, typeorm_1.PrimaryGeneratedColumn)('uuid'),
+    (0, typeorm_1.PrimaryColumn)('uuid', {
+        default: () => 'gen_random_uuid()',
+        name: 'id',
+    }),
     __metadata("design:type", String)
 ], User.prototype, "id", void 0);
 __decorate([
@@ -54,6 +58,10 @@ __decorate([
     (0, typeorm_1.Column)({ type: 'timestamp', nullable: true }),
     __metadata("design:type", Object)
 ], User.prototype, "otp_expires_at", void 0);
+__decorate([
+    (0, typeorm_1.Column)({ nullable: true }),
+    __metadata("design:type", String)
+], User.prototype, "vpa_address", void 0);
 __decorate([
     (0, typeorm_1.CreateDateColumn)(),
     __metadata("design:type", Date)

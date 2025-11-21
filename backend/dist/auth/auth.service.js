@@ -113,8 +113,6 @@ let AuthService = class AuthService {
         const user = await this.userService.findOneEmail(LoginUserDto.email);
         if (!user)
             throw new common_1.UnauthorizedException("user doesn't exist");
-        if (!user.is_email_verified)
-            throw new common_1.UnauthorizedException('Please verify your email first.');
         const validPassword = await bcrypt.compare(LoginUserDto.password, user.password);
         if (!validPassword)
             throw new common_1.UnauthorizedException('Incorrect Password');

@@ -19,12 +19,18 @@ export class UsersController {
   @UseGuards(AuthGuard('jwt'))
   @Get('profile')
   getProfile(@Req() req){
-    return this.usersService.findOneById(req.user.userId);
+    return this.usersService.findOneById(req.user.user_id);
   }
 
-  @Get()
+  @Get('all-user')
   findAll() {
     return this.usersService.findAll();
+  }
+
+  @UseGuards(AuthGuard('jwt'))
+  @Patch('add-payment-method')
+  addBankAccount(@Req() req, @Body() body){
+    return this.usersService.userBankAccount(req.user.user_id,body.vpa_address);
   }
 
   @Get('email')
@@ -38,11 +44,11 @@ export class UsersController {
 
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    return this.usersService.update(+id, updateUserDto);
+    return this.usersService.update(id, updateUserDto);
   }
 
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.usersService.remove(+id);
+    return this.usersService.remove(id);
   }
 }

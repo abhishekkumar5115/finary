@@ -33,7 +33,10 @@ let Invoice = class Invoice {
 };
 exports.Invoice = Invoice;
 __decorate([
-    (0, typeorm_1.PrimaryGeneratedColumn)('uuid'),
+    (0, typeorm_1.PrimaryColumn)('uuid', {
+        default: () => 'gen_random_uuid()',
+        name: 'id',
+    }),
     __metadata("design:type", String)
 ], Invoice.prototype, "id", void 0);
 __decorate([

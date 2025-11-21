@@ -69,8 +69,16 @@ let UsersService = class UsersService {
         });
         return this.userRepository.save(user);
     }
-    findAll() {
-        return `This action returns all users`;
+    async userBankAccount(userId, vpa) {
+        const user = await this.userRepository.findOne({ where: { id: userId } });
+        if (!user)
+            throw new common_1.NotFoundException("User not found!");
+        user.vpa_address = vpa;
+        return this.userRepository.save(user);
+    }
+    async findAll() {
+        const allUser = await this.userRepository.find();
+        return allUser;
     }
     async findOneEmail(email) {
         return this.userRepository.findOne({ where: { email } });
@@ -78,11 +86,22 @@ let UsersService = class UsersService {
     async findOneById(id) {
         return this.userRepository.findOne({ where: { id } });
     }
-    update(id, updateUserDto) {
-        return `This action updates a #${id} user`;
+    async update(id, updateUserDto) {
+        const user = await this.userRepository.findOne({ where: { id: id } });
+        if (!user)
+            throw new common_1.NotFoundException("user does not exist!");
+        if (updateUserDto.password) {
+            updateUserDto.password = await bcrypt.hash(updateUserDto.password, 10);
+        }
+        Object.assign(user, updateUserDto);
+        return await this.userRepository.save(user);
     }
-    remove(id) {
-        return `This action removes a #${id} user`;
+    async remove(id) {
+        const result = await this.userRepository.delete(id);
+        if (result.affected === 0) {
+            throw new common_1.NotFoundException("user not found. Can't delete!");
+        }
+        return result;
     }
 };
 exports.UsersService = UsersService;

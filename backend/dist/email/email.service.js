@@ -23,7 +23,7 @@ let EmailService = class EmailService {
     async sendOtpEmail(to, otp) {
         try {
             await this.resend.emails.send({
-                from: 'onboarding@resend.dev',
+                from: 'welcome@finary.shop',
                 to: to,
                 subject: 'Welcome to Finary! Your Finary Verification Code',
                 html: `

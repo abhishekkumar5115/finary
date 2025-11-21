@@ -112,7 +112,7 @@ const VerifyOtp = () => {
           className="w-full border border-gray-300 rounded-lg px-4 py-2 text-center text-lg tracking-widest focus:ring-2 focus:ring-orange-500 outline-none"
         />
 
-        {message && <p className="text-sm text-red-600 mt-3">{message}</p>}
+        {message && <p className="text-sm text-green-600 mt-3">{message}</p>}
 
         {/* VERIFY BUTTON */}
         <button

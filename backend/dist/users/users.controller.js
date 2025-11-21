@@ -28,10 +28,13 @@ let UsersController = class UsersController {
         return this.usersService.create(createUserDto);
     }
     getProfile(req) {
-        return this.usersService.findOneById(req.user.userId);
+        return this.usersService.findOneById(req.user.user_id);
     }
     findAll() {
         return this.usersService.findAll();
+    }
+    addBankAccount(req, body) {
+        return this.usersService.userBankAccount(req.user.user_id, body.vpa_address);
     }
     findOneEmail(email) {
         return this.usersService.findOneEmail(email);
@@ -40,10 +43,10 @@ let UsersController = class UsersController {
         return this.usersService.findOneById(id);
     }
     update(id, updateUserDto) {
-        return this.usersService.update(+id, updateUserDto);
+        return this.usersService.update(id, updateUserDto);
     }
     remove(id) {
-        return this.usersService.remove(+id);
+        return this.usersService.remove(id);
     }
 };
 exports.UsersController = UsersController;
@@ -64,11 +67,20 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], UsersController.prototype, "getProfile", null);
 __decorate([
-    (0, common_1.Get)(),
+    (0, common_1.Get)('all-user'),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", void 0)
 ], UsersController.prototype, "findAll", null);
+__decorate([
+    (0, common_1.UseGuards)((0, passport_1.AuthGuard)('jwt')),
+    (0, common_1.Patch)('add-payment-method'),
+    __param(0, (0, common_1.Req)()),
+    __param(1, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, Object]),
+    __metadata("design:returntype", void 0)
+], UsersController.prototype, "addBankAccount", null);
 __decorate([
     (0, common_1.Get)('email'),
     __param(0, (0, common_1.Param)('email')),
