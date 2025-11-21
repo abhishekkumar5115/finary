@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: finary-backend
-          image: your-docker-id/finary-backend:latest 
+          image: abhishek2803/finary-backend:${{ github.sha }}
           imagePullPolicy: Always
           ports:
             - containerPort: 3000

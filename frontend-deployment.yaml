@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: finary-frontend
-          image: abhishek2803/finary-frontend:latest
+          image: abhishek2803/finary-frontend:${{ github.sha }}
           imagePullPolicy: Always
           ports:
             - containerPort: 80
