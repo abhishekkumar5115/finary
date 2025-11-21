@@ -40,7 +40,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: build-and-push
     steps:
-    - name: Check out code
+    - name: Check out config files
       uses: actions/checkout@v3
       with:
         fetch-depth: 0 
@@ -50,32 +50,40 @@ jobs:
       with:
         creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-    - name: Set up kubectl
-      uses: azure/setup-kubectl@v3
-      
-    - name: Connect to AKS
+    - name: Set up kubectl and Connect to AKS
       uses: azure/aks-set-context@v3
       with:
         resource-group: ${{ secrets.AZURE_RESOURCE_GROUP }}
         cluster-name: ${{ secrets.AZURE_CLUSTER_NAME }}
 
-    - name: Create/Update Kubernetes Secret
+    - name: Apply Base Infrastructure and Secret
       run: |
-        # IMPORTANT: This command now includes SSL config and Resend key
+        kubectl apply -f internal-services.yaml
+        
+        # 2. Apply Application Deployment manifests
+        kubectl apply -f backend-deployment.yaml
+        kubectl apply -f frontend-deployment.yaml
+        
+        # 3. Create/Update Security Secrets
         kubectl delete secret finary-secrets --ignore-not-found
         kubectl create secret generic finary-secrets \
           --from-literal=POSTGRES_HOST='${{ secrets.POSTGRES_HOST }}' \
           --from-literal=POSTGRES_USER='${{ secrets.POSTGRES_USER }}' \
           --from-literal=POSTGRES_PASSWORD='${{ secrets.POSTGRES_PASSWORD }}' \
-          --from-literal=POSTGRES_DB='${{ secrets.POSTGRES_DB }}' \
+          --from-literal=POSTGRES_DB='postgres' \
           --from-literal=JWT_SECRET='${{ secrets.JWT_SECRET }}' \
           --from-literal=RAZORPAY_KEY_ID='${{ secrets.RAZORPAY_KEY_ID }}' \
           --from-literal=RAZORPAY_KEY_SECRET='${{ secrets.RAZORPAY_KEY_SECRET }}' \
           --from-literal=RESEND_API_KEY='${{ secrets.RESEND_API_KEY }}' \
           --from-literal=PGSSLMODE='require' \
-          --from-literal=NODE_ENV='production'
+          --from-literal=NODE_ENV='development' # Temporary for schema creation
 
-    - name: Deploy YAML files
+    - name: Deploy Applications and Force Tag Update 
       run: |
-        kubectl apply -f backend-deployment.yaml
-        kubectl apply -f frontend-deployment.yaml
+        # 1. Force update the running deployments with the unique SHA tag (CRITICAL)
+        kubectl set image deployment/finary-backend-deployment finary-backend=${{ secrets.DOCKER_USERNAME }}/finary-backend:${{ github.sha }}
+        kubectl set image deployment/finary-frontend-deployment finary-frontend=${{ secrets.DOCKER_USERNAME }}/finary-frontend:${{ github.sha }}
+
+        # 2. Force a full rollout restart to apply new environment variables and image (CRITICAL)
+        kubectl rollout restart deployment finary-backend-deployment
+        kubectl rollout restart deployment finary-frontend-deployment
