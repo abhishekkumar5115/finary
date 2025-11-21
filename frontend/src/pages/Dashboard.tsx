@@ -1,16 +1,10 @@
 import { useState } from "react";
 import ClientList from "../components/ClientList";
 import InvoiceList from "../components/InvoiceList";
-import { Users, FileText, LogOut } from "lucide-react";
 import Navbar from "../components/header/Navbar";
 
 const Dashboard = () => {
   const [activeTab, setActiveTab] = useState<"clients" | "invoices">("clients");
-
-  const handleLogout = () => {
-    localStorage.removeItem("access_token");
-    window.location.href = "/login";
-  };
 
   return (
     <div className="min-h-screen bg-linear-to-br from-gray-50 to-gray-100 flex flex-col">

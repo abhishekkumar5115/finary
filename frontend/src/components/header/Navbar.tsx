@@ -1,5 +1,5 @@
 import { useState } from "react";
-import {Menu,X,User,LogOut, FastForward} from 'lucide-react'
+import {Menu,X,User,LogOut} from 'lucide-react'
 import { Link } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 
