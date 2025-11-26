@@ -13,10 +13,10 @@ export enum InvoiceStatus{
 @Entity('invoices')
 export class Invoice {
     @PrimaryColumn('uuid', {
-         default: () => 'gen_random_uuid()', 
-         name: 'id',
-          })
-        id: string;
+        default: () => 'gen_random_uuid()', 
+        name: 'id',
+    })
+    id: string;
 
     @Column()
     invoice_number:string
@@ -40,7 +40,9 @@ export class Invoice {
     @CreateDateColumn()
     created_at:Date
 
-    @ManyToOne(()=>User, (user)=>user.invoices)
+    @ManyToOne(()=>User, (user)=>user.invoices,{
+    onDelete: 'CASCADE',
+    })
     user:User
 
     @ManyToOne(()=>Client, (client)=>client.invoices)

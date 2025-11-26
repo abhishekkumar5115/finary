@@ -41,6 +41,9 @@ var __importStar = (this && this.__importStar) || (function () {
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.PaymentsService = void 0;
 const common_1 = require("@nestjs/common");
@@ -48,6 +51,7 @@ const config_1 = require("@nestjs/config");
 const invoices_service_1 = require("../invoices/invoices.service");
 const invoice_entity_1 = require("../invoices/entities/invoice.entity");
 const crypto = __importStar(require("crypto"));
+const axios_1 = __importDefault(require("axios"));
 let PaymentsService = class PaymentsService {
     configService;
     invoiceService;
@@ -72,6 +76,20 @@ let PaymentsService = class PaymentsService {
             throw new common_1.BadRequestException("Invalid payment signature");
         }
         return this.invoiceService.updateInvoiceStatus(invoiceId, invoice_entity_1.InvoiceStatus.Paid);
+    }
+    async validateVpa(vpaid) {
+        const keyId = this.configService.get('RAZORPAY_KEY_ID');
+        if (!keyId) {
+            throw new common_1.InternalServerErrorException('Razorpay key id is not configured.');
+        }
+        const response = await axios_1.default.get(`https://api.razorpay.com/v1/payments/validate/vpa?vpa=${vpaid}`, {
+            auth: {
+                username: keyId,
+                password: this.razorpaykeysecret,
+            },
+        });
+        const validateResult = response.data;
+        console.log("VPA RESPONSE:", response.data);
     }
 };
 exports.PaymentsService = PaymentsService;

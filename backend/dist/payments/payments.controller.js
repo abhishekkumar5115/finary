@@ -30,6 +30,9 @@ let PaymentsController = class PaymentsController {
     verifyPayment(Body) {
         return this.paymentService.verifyPayment(Body);
     }
+    async validateVpaEndpoint(vpa) {
+        return this.paymentService.validateVpa(vpa);
+    }
 };
 exports.PaymentsController = PaymentsController;
 __decorate([
@@ -47,6 +50,13 @@ __decorate([
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", void 0)
 ], PaymentsController.prototype, "verifyPayment", null);
+__decorate([
+    (0, common_1.Post)('validate-vpa'),
+    __param(0, (0, common_1.Body)('vpa')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], PaymentsController.prototype, "validateVpaEndpoint", null);
 exports.PaymentsController = PaymentsController = __decorate([
     (0, common_1.Controller)('payments'),
     __metadata("design:paramtypes", [config_1.ConfigService,

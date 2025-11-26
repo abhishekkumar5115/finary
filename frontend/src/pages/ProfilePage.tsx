@@ -1,6 +1,6 @@
 import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
-// import api from "../api/axios";
+import api from "../api/axios";
 
 const ProfilePage = () => {
   const { user, loading } = useAuth();
@@ -10,20 +10,26 @@ const ProfilePage = () => {
   if (!user) return <div className="text-center mt-20">Please login first.</div>;
 
   // DELETE ACCOUNT
-//   const handleDelete = async () => {
-//     const confirmDelete = window.confirm(
-//       "Are you sure you want to delete your account? This action cannot be undone."
-//     );
-//     if (!confirmDelete) return;
+  const handleDelete = async () => {
+    const confirmDelete = window.confirm(
+      "Are you sure you want to delete your account? This action cannot be undone."
+    );
+    if (!confirmDelete) return;
 
-//     try {
-//       await api.delete(`/users/${user.id}`);
-//       localStorage.removeItem("access_token");
-//       navigate("/login");
-//     } catch (err) {
-//       alert("Failed to delete account.");
-//     }
-//   };
+    try {
+      await api.delete(`/users/${user.id}`);
+      localStorage.removeItem("access_token");
+      navigate("/login");
+    } catch (err) {
+      alert("Failed to delete account.");
+    }
+  };
+
+  //logout 
+  const handleLogout= () =>{
+        localStorage.removeItem("access_token");
+        window.location.href = "/login";
+    }
 
   return (
     <div className="min-h-screen bg-gray-50 px-6 py-10">
@@ -53,10 +59,10 @@ const ProfilePage = () => {
               <p className="text-gray-600">{user.email}</p>
 
               <button
-                onClick={() => navigate("/update-profile")}
+                onClick={handleLogout}
                 className="mt-3 text-blue-600 hover:underline text-sm"
               >
-                Edit Profile
+                Logout
               </button>
             </div>
           </div>
@@ -104,12 +110,12 @@ const ProfilePage = () => {
             Permanently delete your account. This action cannot be undone.
           </p>
 
-          {/* <button
+          <button
             onClick={handleDelete}
             className="bg-red-600 text-white px-6 py-2 rounded-lg hover:bg-red-700 transition"
           >
             Delete Account
-          </button> */}
+          </button>
         </section>
       </div>
     </div>

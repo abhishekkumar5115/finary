@@ -36,7 +36,7 @@ const InvoiceList = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 py-10 px-6">
+    <div className="min-h-screen bg-linear-to-br from-gray-50 to-gray-100 py-10 px-6">
       <div className="max-w-6xl mx-auto bg-white rounded-2xl shadow-lg p-8 border border-gray-100">
         {/* Header */}
         <div className="flex justify-between items-center mb-8">

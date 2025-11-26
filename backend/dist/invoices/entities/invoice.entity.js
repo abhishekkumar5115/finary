@@ -68,7 +68,9 @@ __decorate([
     __metadata("design:type", Date)
 ], Invoice.prototype, "created_at", void 0);
 __decorate([
-    (0, typeorm_1.ManyToOne)(() => user_entity_1.User, (user) => user.invoices),
+    (0, typeorm_1.ManyToOne)(() => user_entity_1.User, (user) => user.invoices, {
+        onDelete: 'CASCADE',
+    }),
     __metadata("design:type", user_entity_1.User)
 ], Invoice.prototype, "user", void 0);
 __decorate([

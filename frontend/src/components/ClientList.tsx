@@ -68,6 +68,16 @@ const ClientList = () => {
                 </td>
               </tr>
             ))}
+            {clients.length == 0 && (
+                <tr>
+                  <td
+                    colSpan={5}
+                    className="text-center py-10 text-gray-500 italic"
+                  >
+                    No clients found, Please Add clients.
+                  </td>
+                </tr>
+            )}
           </tbody>
         </table>
       </div>

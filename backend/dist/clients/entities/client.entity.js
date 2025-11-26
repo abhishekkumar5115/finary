@@ -37,7 +37,7 @@ __decorate([
     __metadata("design:type", String)
 ], Client.prototype, "email", void 0);
 __decorate([
-    (0, typeorm_1.ManyToOne)(() => user_entity_1.User, (user) => user.clients, { eager: true }),
+    (0, typeorm_1.ManyToOne)(() => user_entity_1.User, (user) => user.clients, { eager: true, onDelete: 'CASCADE' }),
     (0, typeorm_1.JoinColumn)({ name: 'user_id' }),
     __metadata("design:type", user_entity_1.User)
 ], Client.prototype, "user", void 0);

@@ -86,8 +86,8 @@ export class AuthService {
 
     if (!user) throw new UnauthorizedException("user doesn't exist");
 
-    if (!user.is_email_verified)
-      throw new UnauthorizedException('Please verify your email first.');
+    // if (!user.is_email_verified)
+    //   throw new UnauthorizedException('Please verify your email first.');
 
     const validPassword = await bcrypt.compare(
       LoginUserDto.password,

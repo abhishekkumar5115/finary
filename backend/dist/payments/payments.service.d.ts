@@ -6,4 +6,5 @@ export declare class PaymentsService {
     private razorpaykeysecret;
     constructor(configService: ConfigService, invoiceService: InvoicesService);
     verifyPayment(body: any): Promise<import("../invoices/entities/invoice.entity").Invoice>;
+    validateVpa(vpaid: string): Promise<void>;
 }

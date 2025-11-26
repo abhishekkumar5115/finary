@@ -14,8 +14,16 @@ spec:
         app: finary-frontend
     spec:
       containers:
-        - name: finary-frontend
-          image: abhishek2803/finary-frontend:${{ github.sha }}
-          imagePullPolicy: Always
-          ports:
-            - containerPort: 80
+      - name: finary-frontend
+        image: abhishek2803/finary-frontend:${{ github.sha }}
+        ports:
+          - containerPort: 80
+          - containerPort: 443
+        volumeMounts:
+          - name: ssl-certs-frontend
+            mountPath: /certs
+            readOnly: true
+      volumes:
+        - name: ssl-certs-frontend
+          secret:
+            secretName: finary-ssl-frontend

@@ -7,6 +7,9 @@ import { useNavigate } from "react-router-dom";
 const AddPaymentMethod = () => {
   const { user, fetchProfile, loading } = useAuth();
   const [vpa, setVpa] = useState<string>("");
+  const [vpaStatus, setVpaStatus] = useState<string | null>(null);
+  const [vpaName, setVpaName] = useState("");
+  const [isVpaValidated, setIsVpaValidated] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const navigate = useNavigate();
@@ -32,6 +35,30 @@ const AddPaymentMethod = () => {
       setError("Failed to add payment method! Try again.");
     }
   };
+
+  //vpa validation 
+  const vpaValidation = async() =>{
+    if (!vpa.trim()) {
+    setVpaStatus("invalid");
+    return;
+    }
+
+    try {
+      const res = await api.post("/payments/validate-vpa",{vpa});
+
+      if(res.data.valid){
+        setVpaStatus("valid");
+        setVpaName(res.data.beneficiary);
+        setIsVpaValidated(true);
+      }else {
+      setVpaStatus("invalid");
+      setIsVpaValidated(false);
+    }
+    } catch (error) {
+      setVpaStatus("invalid");
+      setIsVpaValidated(false);
+    }
+  }
 
   if (loading) {
     return <div className="text-center mt-20 text-gray-800">Loading...</div>;
@@ -65,16 +92,33 @@ const AddPaymentMethod = () => {
             <input
               type="text"
               value={vpa}
-              onChange={(e) => setVpa(e.target.value)}
+              onChange={(e) => {
+              setVpa(e.target.value);
+              setIsVpaValidated(false);
+              setVpaStatus(null);
+              }}
               placeholder="example@upi"
               className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 outline-none"
             />
 
             {/* VERIFY UPI LINK */}
-            <p className="text-blue-600 text-sm mt-2 cursor-pointer hover:underline">
-              Verify UPI Address
+            <p
+            className="text-blue-600 text-sm mt-2 cursor-pointer hover:underline"
+            onClick={vpaValidation}
+            >
+            Verify UPI Address
             </p>
           </div>
+
+                {vpaStatus === "valid" && (
+                <p className="text-green-600 text-sm mt-1">
+                ✔ Valid UPI! Name: <strong>{vpaName}</strong>
+                </p>
+                )}
+
+                {vpaStatus === "invalid" && (
+                <p className="text-red-500 text-sm mt-1">❌ Invalid UPI Address</p>
+                )}
 
           {/* MESSAGES */}
           {error && <p className="text-red-500 text-sm">{error}</p>}
@@ -82,6 +126,7 @@ const AddPaymentMethod = () => {
 
           <button
             type="submit"
+            disabled={!isVpaValidated}
             className="w-full bg-green-600 text-white py-2 rounded-lg hover:bg-green-700 transition disabled:opacity-50"
           >
             Save Payment Method

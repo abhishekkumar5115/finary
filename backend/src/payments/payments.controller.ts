@@ -20,5 +20,10 @@ export class PaymentsController {
   verifyPayment(@Body() Body:any){
     return this.paymentService.verifyPayment(Body);
   }
+ 
+  @Post('validate-vpa')
+  async validateVpaEndpoint(@Body('vpa') vpa: string) {
+    return this.paymentService.validateVpa(vpa);
+  }
 
 }

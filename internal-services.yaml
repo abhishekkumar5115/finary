@@ -4,14 +4,16 @@ kind: Service
 metadata:
   name: finary-backend-service
 spec:
-  # This creates a NEW External IP for your backend
   type: LoadBalancer
   selector:
     app: finary-backend
   ports:
-  - port: 80
-    targetPort: 3000
-
+  - name: http
+    port: 80
+    targetPort: 80
+  - name: https
+    port: 443
+    targetPort: 443
 ---
 # === 2. Frontend Service (LoadBalancer) ===
 apiVersion: v1
@@ -24,5 +26,9 @@ spec:
   selector:
     app: finary-frontend
   ports:
-  - port: 80
+  - name: http
+    port: 80
     targetPort: 80
+  - name: https
+    port: 443
+    targetPort: 443

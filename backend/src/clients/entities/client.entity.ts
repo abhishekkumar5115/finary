@@ -16,7 +16,7 @@ export class Client {
     @Column()
     email:string
 
-    @ManyToOne(()=> User, (user)=> user.clients ,{ eager: true })
+    @ManyToOne(()=> User, (user)=> user.clients ,{ eager: true, onDelete: 'CASCADE' })
     @JoinColumn({ name: 'user_id' })
     user:User
 

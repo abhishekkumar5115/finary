@@ -1,9 +1,9 @@
-import { Injectable, BadRequestException } from '@nestjs/common';
+import { Injectable, BadRequestException, InternalServerErrorException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { InvoicesService } from '../invoices/invoices.service';
 import { InvoiceStatus } from '../invoices/entities/invoice.entity';
 import * as crypto from 'crypto'
-
+import axios from 'axios';
 
 @Injectable()
 export class PaymentsService {
@@ -12,7 +12,7 @@ export class PaymentsService {
 
     constructor(
         private readonly configService: ConfigService,
-        private readonly invoiceService : InvoicesService
+        private readonly invoiceService : InvoicesService,
     ){
         const secretKey = this.configService.get<string>('RAZORPAY_KEY_SECRET');
         if (!secretKey) {
@@ -39,5 +39,47 @@ export class PaymentsService {
             throw new BadRequestException("Invalid payment signature");
         }
         return this.invoiceService.updateInvoiceStatus(invoiceId, InvoiceStatus.Paid);
+    }
+
+    //validate upa id
+    async validateVpa(vpaid:string){
+        const keyId = this.configService.get<string>('RAZORPAY_KEY_ID');
+        if (!keyId) {
+            throw new InternalServerErrorException('Razorpay key id is not configured.');
+        }
+        try {
+            const response = await axios.get(`https://api.razorpay.com/v1/payments/validate/vpa?vpa=${vpaid}`,{
+                auth: {
+                    username: keyId,
+                    password: this.razorpaykeysecret,
+                },
+            })
+
+            const validateResult = response.data;
+            console.log("VPA RESPONSE:", response.data);
+
+
+            if (!validateResult.status || validateResult.vpa?.exists === false) {
+                return {
+                        valid: false,
+                        message: "VPA is inactive or invalid.",
+                    };
+            }
+
+            return {
+                    valid: true,
+                    beneficiary: validateResult.vpa.name || "N/A",
+            };
+            
+        } catch (error) {
+
+            if (error.response && error.response.status === 400) {
+                return {
+                        valid: false,
+                        message: "Invalid UPI Address",
+                    };
+            }
+            throw new InternalServerErrorException('VPA validation service failed.');
+        }
     }
 }
