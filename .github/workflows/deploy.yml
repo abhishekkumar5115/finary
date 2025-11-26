@@ -34,7 +34,7 @@ jobs:
         push: true
         tags: ${{ secrets.DOCKER_USERNAME }}/finary-frontend:${{ github.sha }}
         build-args: |
-          VITE_API_BASE_URL=${{ secrets.VITE_API_BASE_URL_PROD }}
+          VITE_API_BASE_URL=${{ secrets.VITE_API_BASE_URL }}
 
   deploy:
     runs-on: ubuntu-latest
