@@ -24,7 +24,7 @@ import { EmailModule } from './email/email.module';
         
         // Priority 1: Check standard DATABASE_URL (Render/Heroku standard)
         // We also check process.env directly as a backup
-        const databaseUrl = configService.get<string>('DATABASE_URL') || process.env.DATABASE_URL;
+        const databaseUrl = configService.get<string>('POSTGRES_DB') || process.env.POSTGRES_DB;
 
         if (databaseUrl) {
           logger.log('Connecting to database via DATABASE_URL (Production mode)');
