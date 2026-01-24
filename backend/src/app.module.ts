@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, Logger } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -20,22 +20,27 @@ import { EmailModule } from './email/email.module';
       imports: [ConfigModule],
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => {
-        const databaseUrl = configService.get<string>('DATABASE_URL');
+        const logger = new Logger('DatabaseConfig');
+        
+        // Priority 1: Check standard DATABASE_URL (Render/Heroku standard)
+        // We also check process.env directly as a backup
+        const databaseUrl = configService.get<string>('DATABASE_URL') || process.env.DATABASE_URL;
 
-        // If DATABASE_URL is present (Render/Production), use it directly
         if (databaseUrl) {
+          logger.log('Connecting to database via DATABASE_URL (Production mode)');
           return {
             type: 'postgres',
             url: databaseUrl,
             entities: [User, Client, Invoice],
-            synchronize: true, // Use true for development/MVP, false for strict production
+            synchronize: true, 
             ssl: {
-              rejectUnauthorized: false, // Required for managed databases on Render/Azure
+              rejectUnauthorized: false,
             },
           };
         }
 
-        // Fallback for local development using individual variables
+        // Priority 2: Fallback for local development
+        logger.warn('DATABASE_URL not found, falling back to localhost configuration');
         return {
           type: 'postgres',
           host: configService.get<string>('POSTGRES_HOST', 'localhost'),
