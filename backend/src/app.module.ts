@@ -21,10 +21,10 @@ import { EmailModule } from './email/email.module';
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => {
         const logger = new Logger('DatabaseConfig');
-        
-        // Priority 1: Check standard DATABASE_URL (Render/Heroku standard)
+
+        // Priority 1: Check standard POSTGRES_SQL or DATABASE_URL (Render/Supabase standard)
         // We also check process.env directly as a backup
-        const databaseUrl = configService.get<string>('POSTGRES_DB') || process.env.POSTGRES_DB;
+        const databaseUrl = configService.get<string>('POSTGRES_SQL') || process.env.POSTGRES_SQL || configService.get<string>('POSTGRES_DB') || process.env.POSTGRES_DB || configService.get<string>('DATABASE_URL') || process.env.DATABASE_URL;
 
         if (databaseUrl) {
           logger.log('Connecting to database via DATABASE_URL (Production mode)');
@@ -32,7 +32,7 @@ import { EmailModule } from './email/email.module';
             type: 'postgres',
             url: databaseUrl,
             entities: [User, Client, Invoice],
-            synchronize: true, 
+            synchronize: true,
             ssl: {
               rejectUnauthorized: false,
             },
@@ -63,4 +63,4 @@ import { EmailModule } from './email/email.module';
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule { }

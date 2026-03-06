@@ -33,7 +33,7 @@ exports.AppModule = AppModule = __decorate([
                 inject: [config_1.ConfigService],
                 useFactory: (configService) => {
                     const logger = new common_1.Logger('DatabaseConfig');
-                    const databaseUrl = configService.get('POSTGRES_DB') || process.env.POSTGRES_DB;
+                    const databaseUrl = configService.get('POSTGRES_SQL') || process.env.POSTGRES_SQL || configService.get('POSTGRES_DB') || process.env.POSTGRES_DB || configService.get('DATABASE_URL') || process.env.DATABASE_URL;
                     if (databaseUrl) {
                         logger.log('Connecting to database via DATABASE_URL (Production mode)');
                         return {
