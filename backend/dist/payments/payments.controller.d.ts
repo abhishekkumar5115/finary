@@ -8,5 +8,13 @@ export declare class PaymentsController {
         key: string | undefined;
     };
     verifyPayment(Body: any): Promise<import("../invoices/entities/invoice.entity").Invoice>;
-    validateVpaEndpoint(vpa: string): Promise<void>;
+    validateVpaEndpoint(vpa: string): Promise<{
+        valid: boolean;
+        message: string;
+        beneficiary?: undefined;
+    } | {
+        valid: boolean;
+        beneficiary: any;
+        message?: undefined;
+    }>;
 }

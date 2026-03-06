@@ -82,14 +82,34 @@ let PaymentsService = class PaymentsService {
         if (!keyId) {
             throw new common_1.InternalServerErrorException('Razorpay key id is not configured.');
         }
-        const response = await axios_1.default.get(`https://api.razorpay.com/v1/payments/validate/vpa?vpa=${vpaid}`, {
-            auth: {
-                username: keyId,
-                password: this.razorpaykeysecret,
-            },
-        });
-        const validateResult = response.data;
-        console.log("VPA RESPONSE:", response.data);
+        try {
+            const response = await axios_1.default.post(`https://api.razorpay.com/v1/payments/validate/vpa`, { vpa: vpaid }, {
+                auth: {
+                    username: keyId,
+                    password: this.razorpaykeysecret,
+                },
+            });
+            const data = response.data;
+            if (!data.success) {
+                return {
+                    valid: false,
+                    message: "VPA is invalid or does not exist.",
+                };
+            }
+            return {
+                valid: true,
+                beneficiary: data.customer_name || "N/A",
+            };
+        }
+        catch (error) {
+            if (error.response && error.response.status === 400) {
+                return {
+                    valid: false,
+                    message: "Invalid UPI Address",
+                };
+            }
+            throw new common_1.InternalServerErrorException('VPA validation service failed.');
+        }
     }
 };
 exports.PaymentsService = PaymentsService;

@@ -6,5 +6,13 @@ export declare class PaymentsService {
     private razorpaykeysecret;
     constructor(configService: ConfigService, invoiceService: InvoicesService);
     verifyPayment(body: any): Promise<import("../invoices/entities/invoice.entity").Invoice>;
-    validateVpa(vpaid: string): Promise<void>;
+    validateVpa(vpaid: string): Promise<{
+        valid: boolean;
+        message: string;
+        beneficiary?: undefined;
+    } | {
+        valid: boolean;
+        beneficiary: any;
+        message?: undefined;
+    }>;
 }

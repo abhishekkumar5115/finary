@@ -6,10 +6,16 @@ import * as fs from 'fs';
 
 async function bootstrap() {
 
-  const httpsOptions = {
-    key: fs.readFileSync('/certs/privkey.pem'),
-    cert: fs.readFileSync('/certs/fullchain.pem'),
-  };
+  let httpsOptions: any = null;
+
+  try {
+    // Try reading certs (works only in production)
+    httpsOptions = {
+      key: fs.readFileSync('/certs/privkey.pem'),
+      cert: fs.readFileSync('/certs/fullchain.pem'),
+    }
+  } catch (error) {
+  }
   const app = await NestFactory.create(AppModule,{httpsOptions});
   app.enableCors({
     origin:true,
@@ -18,11 +24,15 @@ async function bootstrap() {
     allowedHeaders: ['Content-Type', 'Authorization'],
   })
 
-  await app.listen(443, '0.0.0.0');
+  if (httpsOptions) {
+    await app.listen(443, '0.0.0.0');
 
-  http.createServer((req, res) => {
-    res.writeHead(301, { Location: 'https://' + req.headers.host + req.url });
-    res.end();
-  }).listen(80, '0.0.0.0');
+    http.createServer((req, res) => {
+      res.writeHead(301, { Location: 'https://' + req.headers.host + req.url });
+      res.end();
+    }).listen(80, '0.0.0.0');
+  }else{
+    await app.listen(3000);
+  }
 }
 bootstrap();

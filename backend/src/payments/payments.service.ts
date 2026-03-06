@@ -48,27 +48,29 @@ export class PaymentsService {
             throw new InternalServerErrorException('Razorpay key id is not configured.');
         }
         try {
-            const response = await axios.get(`https://api.razorpay.com/v1/payments/validate/vpa?vpa=${vpaid}`,{
+            const response = await axios.post(`https://api.razorpay.com/v1/payments/validate/vpa`,
+                { vpa: vpaid },
+                {
                 auth: {
                     username: keyId,
                     password: this.razorpaykeysecret,
-                },
-            })
+                    },
+                }
+            )
 
-            const validateResult = response.data;
-            console.log("VPA RESPONSE:", response.data);
+            const data = response.data;
 
 
-            if (!validateResult.status || validateResult.vpa?.exists === false) {
-                return {
-                        valid: false,
-                        message: "VPA is inactive or invalid.",
-                    };
+            if (!data.success) {
+            return {
+                valid: false,
+                message: "VPA is invalid or does not exist.",
+                };
             }
 
             return {
                     valid: true,
-                    beneficiary: validateResult.vpa.name || "N/A",
+                    beneficiary: data.customer_name || "N/A",
             };
             
         } catch (error) {
