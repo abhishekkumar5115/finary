@@ -31,23 +31,40 @@ exports.AppModule = AppModule = __decorate([
             typeorm_1.TypeOrmModule.forRootAsync({
                 imports: [config_1.ConfigModule],
                 inject: [config_1.ConfigService],
-                useFactory: (configService) => ({
-                    type: 'postgres',
-                    host: configService.get('POSTGRES_HOST', 'localhost'),
-                    port: configService.get('POSTGRES_PORT', 5432),
-                    username: configService.get('POSTGRES_USER'),
-                    password: configService.get('POSTGRES_PASSWORD'),
-                    database: configService.get('POSTGRES_DB'),
-                    entities: [user_entity_1.User, client_entity_1.Client, invoice_entity_1.Invoice],
-                    synchronize: true,
-                }),
+                useFactory: (configService) => {
+                    const logger = new common_1.Logger('DatabaseConfig');
+                    const databaseUrl = configService.get('POSTGRES_DB') || process.env.POSTGRES_DB;
+                    if (databaseUrl) {
+                        logger.log('Connecting to database via DATABASE_URL (Production mode)');
+                        return {
+                            type: 'postgres',
+                            url: databaseUrl,
+                            entities: [user_entity_1.User, client_entity_1.Client, invoice_entity_1.Invoice],
+                            synchronize: true,
+                            ssl: {
+                                rejectUnauthorized: false,
+                            },
+                        };
+                    }
+                    logger.warn('DATABASE_URL not found, falling back to localhost configuration');
+                    return {
+                        type: 'postgres',
+                        host: configService.get('POSTGRES_HOST', 'localhost'),
+                        port: configService.get('POSTGRES_PORT', 5432),
+                        username: configService.get('POSTGRES_USER'),
+                        password: configService.get('POSTGRES_PASSWORD'),
+                        database: configService.get('POSTGRES_DB'),
+                        entities: [user_entity_1.User, client_entity_1.Client, invoice_entity_1.Invoice],
+                        synchronize: true,
+                    };
+                },
             }),
             users_module_1.UsersModule,
             auth_module_1.AuthModule,
             clients_module_1.ClientsModule,
             invoices_module_1.InvoicesModule,
             payments_module_1.PaymentsModule,
-            email_module_1.EmailModule
+            email_module_1.EmailModule,
         ],
         controllers: [app_controller_1.AppController],
         providers: [app_service_1.AppService],

@@ -35,35 +35,39 @@ var __importStar = (this && this.__importStar) || (function () {
 Object.defineProperty(exports, "__esModule", { value: true });
 const core_1 = require("@nestjs/core");
 const app_module_1 = require("./app.module");
-const http = __importStar(require("http"));
 const fs = __importStar(require("fs"));
 async function bootstrap() {
-    let httpsOptions = null;
-    try {
-        httpsOptions = {
-            key: fs.readFileSync('/certs/privkey.pem'),
-            cert: fs.readFileSync('/certs/fullchain.pem'),
-        };
+    const isProd = process.env.NODE_ENV === 'production';
+    let app;
+    if (isProd) {
+        app = await core_1.NestFactory.create(app_module_1.AppModule);
     }
-    catch (error) {
+    else {
+        try {
+            if (fs.existsSync('/certs/privkey.pem') && fs.existsSync('/certs/fullchain.pem')) {
+                const httpsOptions = {
+                    key: fs.readFileSync('/certs/privkey.pem'),
+                    cert: fs.readFileSync('/certs/fullchain.pem'),
+                };
+                app = await core_1.NestFactory.create(app_module_1.AppModule, { httpsOptions });
+            }
+            else {
+                app = await core_1.NestFactory.create(app_module_1.AppModule);
+            }
+        }
+        catch (e) {
+            app = await core_1.NestFactory.create(app_module_1.AppModule);
+        }
     }
-    const app = await core_1.NestFactory.create(app_module_1.AppModule, { httpsOptions });
     app.enableCors({
         origin: true,
         credentials: true,
         methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
         allowedHeaders: ['Content-Type', 'Authorization'],
     });
-    if (httpsOptions) {
-        await app.listen(443, '0.0.0.0');
-        http.createServer((req, res) => {
-            res.writeHead(301, { Location: 'https://' + req.headers.host + req.url });
-            res.end();
-        }).listen(80, '0.0.0.0');
-    }
-    else {
-        await app.listen(3000);
-    }
+    const port = process.env.PORT || 3000;
+    await app.listen(port, '0.0.0.0');
+    console.log(`Application is running on: http://localhost:${port}`);
 }
 bootstrap();
 //# sourceMappingURL=main.js.map
