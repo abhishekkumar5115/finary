@@ -1,82 +1,70 @@
-import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import api from "../api/axios";
-
-interface Client {
-  id: string;
-  name: string;
-  email: string;
-}
+import { useSuppliers } from "../services/supplierHooks";
+import { TableSkeleton } from "./ui/Skeleton";
 
 const ClientList = () => {
-  const [clients, setClients] = useState<Client[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
+  const { data: clients, isLoading, isError } = useSuppliers();
 
-  useEffect(() => {
-    const fetchClients = async () => {
-      try {
-        const response = await api.get("/clients");
-        setClients(response.data);
-      } catch (error: any) {
-        setError("Failed to fetch clients. Please try again later.");
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchClients();
-  }, []);
-
-  if (loading) {
-    return <p className="text-gray-600">Loading clients...</p>;
+  if (isLoading) {
+    return (
+      <div className="p-8 bg-white rounded-xl shadow-xs border border-slate-100">
+        <div className="flex justify-between items-center mb-6">
+          <h2 className="text-2xl font-semibold text-slate-800">Accounts</h2>
+        </div>
+        <TableSkeleton rows={5} columns={2} />
+      </div>
+    );
   }
 
-  if (error) {
-    return <p className="text-red-500">{error}</p>;
+  if (isError) {
+    return (
+      <div className="p-4 bg-red-50 text-red-600 rounded-md border border-red-100">
+        Failed to fetch accounts. Please try again later.
+      </div>
+    );
   }
 
   return (
-    <div className="p-8 bg-white rounded-xl shadow-md">
+    <div className="p-8 bg-white rounded-xl shadow-xs border border-slate-100">
       <div className="flex justify-between items-center mb-6">
-        <h2 className="text-2xl font-semibold">Clients</h2>
+        <h2 className="text-2xl font-semibold text-slate-800">Accounts</h2>
 
-        {/* ✅ Changed from button → Link */}
         <Link
           to="/clients/new"
-          className="bg-green-600 text-white px-5 py-2 rounded-md hover:bg-yellow-400 transition"
+          className="bg-indigo-600 text-white px-5 py-2.5 text-sm font-medium rounded-lg hover:bg-indigo-700 transition shadow-xs"
         >
-          + Add New Client
+          + Add New Account
         </Link>
       </div>
 
       <div className="overflow-x-auto">
-        <table className="min-w-full border border-gray-200 rounded-lg">
-          <thead className="bg-gray-100 text-gray-700">
+        <table className="min-w-full border border-slate-200 rounded-lg">
+          <thead className="bg-slate-50 text-slate-600 uppercase text-xs font-semibold tracking-wider">
             <tr>
-              <th className="text-left px-6 py-3 border-b">Name</th>
-              <th className="text-left px-6 py-3 border-b">Email</th>
+              <th className="text-left px-6 py-4 border-b">Account Name</th>
+              <th className="text-left px-6 py-4 border-b">Contact Email</th>
             </tr>
           </thead>
-          <tbody>
-            {clients.map((client) => (
-              <tr key={client.id} className="hover:bg-gray-50 transition">
-                <td className="px-6 py-3 border-b font-medium text-gray-900">
+          <tbody className="divide-y divide-slate-100">
+            {clients?.map((client) => (
+              <tr key={client.id} className="hover:bg-slate-50 transition">
+                <td className="px-6 py-4 font-medium text-slate-900">
                   {client.name}
                 </td>
-                <td className="px-6 py-3 border-b text-gray-700">
+                <td className="px-6 py-4 text-slate-600">
                   {client.email}
                 </td>
               </tr>
             ))}
-            {clients.length == 0 && (
-                <tr>
-                  <td
-                    colSpan={5}
-                    className="text-center py-10 text-gray-500 italic"
-                  >
-                    No clients found, Please Add clients.
-                  </td>
-                </tr>
+            {(!clients || clients.length === 0) && (
+              <tr>
+                <td
+                  colSpan={2}
+                  className="text-center py-10 text-slate-500 italic"
+                >
+                  No accounts found. Please add an account.
+                </td>
+              </tr>
             )}
           </tbody>
         </table>

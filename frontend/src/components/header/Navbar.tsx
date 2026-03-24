@@ -4,8 +4,8 @@ import { Link } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 
 interface NavbarProps {
-    activeTab : 'clients' | 'invoices',
-    setActiveTab : (Tab:'clients'|'invoices')=>void
+    activeTab : 'accounts' | 'invoices',
+    setActiveTab : (Tab:'accounts'|'invoices')=>void
 }
 
 const Navbar = ({activeTab,setActiveTab}:NavbarProps)=>{
@@ -19,58 +19,63 @@ const Navbar = ({activeTab,setActiveTab}:NavbarProps)=>{
     }
 
     return (
-        <header className="sticky top-0 z-20 w-full bg-white/80 backdrop-blur-md border-b border-gray-200 shadow-sm">
-            <div  className="flex items-center justify-between px-6 py-4">
+        <header className="sticky top-0 z-20 w-full bg-white/90 backdrop-blur-md border-b border-slate-200 shadow-xs">
+            <div  className="flex items-center justify-between px-6 py-4 max-w-7xl mx-auto">
                 {/* Logo */}
-                <h1 className="text-3xl font-extrabold text-orange-500 tracking-tight">
-                Finary
+                <h1 className="text-2xl font-bold text-indigo-700 tracking-tight flex items-center gap-2">
+                  <div className="w-8 h-8 bg-indigo-600 text-white rounded-lg flex justify-center items-center shadow-xs">
+                    F
+                  </div>
+                  Finary
                 </h1>
 
                 {/* DESKTOP NAV */}
                 <nav className="hidden md:flex gap-4 items-center">
                     <button
-                    onClick={() => setActiveTab("clients")}
-                    className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-all ${
-                    activeTab === "clients"
-                    ? "bg-orange-600 text-white shadow-md"
-                    : "text-gray-700 hover:bg-gray-200"
+                    onClick={() => setActiveTab("accounts")}
+                    className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-all text-sm ${
+                    activeTab === "accounts"
+                    ? "bg-slate-800 text-white shadow-xs"
+                    : "text-slate-600 hover:bg-slate-100 hover:text-slate-900"
                     }`}
                     >
-                    Clients
+                    Accounts
                     </button>
                     <button
                     onClick={() => setActiveTab("invoices")}
-                    className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-all ${
+                    className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-all text-sm ${
                     activeTab === "invoices"
-                    ? "bg-orange-600 text-white shadow-md"
-                    : "text-gray-700 hover:bg-gray-200"
+                    ? "bg-slate-800 text-white shadow-xs"
+                    : "text-slate-600 hover:bg-slate-100 hover:text-slate-900"
                     }`}
                     >
                     Invoices
                     </button>
 
                     {/* Profile Dropdown */}
-                    <div className="relative">
+                    <div className="relative ml-4 border-l border-slate-200 pl-4">
                         <button
                         onClick={() => setProfileOpen(!profileOpen)}
-                        className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-gray-100 text-gray-800 transition"
+                        className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-slate-100 text-slate-700 transition"
                         >
-                            <User size={18} />
-                            <span>{user?.full_name?.split(" ")[0] || "User"}</span>
+                            <div className="bg-slate-200 p-1.5 rounded-full">
+                                <User size={16} className="text-slate-600" />
+                            </div>
+                            <span className="font-medium text-sm">{user?.full_name?.split(" ")[0] || "User"}</span>
                         </button>
 
                         {profileOpen && (
-                            <div className="absolute right-0 mt-2 w-40 bg-white rounded-xl shadow-lg border border-gray-200">
+                            <div className="absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-lg border border-slate-200 overflow-hidden">
                                 <Link
                                 to="/profile"
-                                className="block px-4 py-2 hover:bg-gray-100 text-gray-700"
+                                className="block px-4 py-3 hover:bg-slate-50 text-slate-700 text-sm font-medium border-b border-slate-100"
                                 >
-                                Profile
+                                Profile Settings
                                 </Link>
 
                                 <button
                                 onClick={handleLogout}
-                                className="w-full text-left px-4 py-2 hover:bg-gray-100 flex items-center gap-2 text-gray-700"
+                                className="w-full text-left px-4 py-3 hover:bg-rose-50 flex items-center gap-2 text-rose-600 text-sm font-medium transition"
                                 >
                                 <LogOut size={16} /> Logout
                                 </button>
@@ -80,28 +85,28 @@ const Navbar = ({activeTab,setActiveTab}:NavbarProps)=>{
                 </nav>
                 {/* MOBILE HAMBURGER */}
                 <button
-                className="md:hidden text-gray-800"
+                className="md:hidden text-slate-800 p-2 hover:bg-slate-100 rounded-md"
                 onClick={() => setMobileOpen(!mobileOpen)}
                 >
-                {mobileOpen ? <X size={26} /> : <Menu size={26} />}
+                {mobileOpen ? <X size={24} /> : <Menu size={24} />}
                 </button>
             </div>
 
             {/* MOBILE NAV MENU */}
             {mobileOpen && (
-            <div className="md:hidden flex flex-col gap-2 px-6 pb-4 bg-white border-t border-gray-200">
+            <div className="md:hidden flex flex-col gap-2 px-6 pb-4 bg-white border-t border-slate-200 shadow-sm transition-all">
             <button
             onClick={() => {
-            setActiveTab("clients");
+            setActiveTab("accounts");
             setMobileOpen(false);
             }}
-            className={`px-4 py-2 rounded-lg text-left ${
-            activeTab === "clients"
-                ? "bg-orange-600 text-white"
-                : "text-gray-700 hover:bg-gray-100"
+            className={`px-4 py-3 mt-2 rounded-lg text-left font-medium ${
+            activeTab === "accounts"
+                ? "bg-slate-800 text-white"
+                : "text-slate-700 hover:bg-slate-50"
             }`}
             >
-            Clients
+            Accounts
             </button>
 
             <button
@@ -109,28 +114,30 @@ const Navbar = ({activeTab,setActiveTab}:NavbarProps)=>{
             setActiveTab("invoices");
             setMobileOpen(false);
             }}
-            className={`px-4 py-2 rounded-lg text-left ${
+            className={`px-4 py-3 rounded-lg text-left font-medium ${
             activeTab === "invoices"
-                ? "bg-orange-600 text-white"
-                : "text-gray-700 hover:bg-gray-100"
+                ? "bg-slate-800 text-white"
+                : "text-slate-700 hover:bg-slate-50"
             }`}
             >
             Invoices
             </button>
 
+            <div className="h-px bg-slate-200 my-2"></div>
+
             <Link
             to="/profile"
-            className="px-4 py-2 rounded-lg hover:bg-gray-100 text-gray-700"
+            className="px-4 py-3 rounded-lg hover:bg-slate-50 text-slate-700 font-medium"
             onClick={() => setMobileOpen(false)}
             >
-            Profile
+            Profile Settings
             </Link>
 
             <button
             onClick={handleLogout}
-            className="px-4 py-2 rounded-lg text-left flex items-center gap-2 text-gray-700 hover:bg-gray-100"
+            className="px-4 py-3 rounded-lg text-left flex items-center gap-2 text-rose-600 hover:bg-rose-50 font-medium transition"
             >
-            <LogOut size={16} /> Logout
+            <LogOut size={18} /> Logout
             </button>
             </div>
             )}

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import api from "../api/axios";
 
 const Login = () => {
@@ -34,9 +34,14 @@ const Login = () => {
       } else {
         setMessage("Login failed. Please try again.");
       }
-    } catch (err: any) {
-      if (err.response && err.response.status === 401) {
-        setMessage("Invalid email or password.");
+    } catch (err: unknown) {
+      if (err instanceof Error && 'response' in err) {
+        const axErr = err as { response?: { status?: number } };
+        if (axErr.response?.status === 401) {
+          setMessage("Invalid email or password.");
+        } else {
+          setMessage("Something went wrong. Please try again.");
+        }
       } else {
         setMessage("Something went wrong. Please try again.");
       }
@@ -46,80 +51,113 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
-      <div className="bg-white p-8 rounded-2xl shadow-lg w-full max-w-md">
-        <h2 className="text-2xl font-semibold text-gray-900 mb-6 text-center">
-          Welcome Back
-        </h2>
-
-        <form onSubmit={handleSubmit} className="space-y-5">
-          {/* Email */}
-          <div>
-            <label
-              htmlFor="email"
-              className="block text-gray-700 font-medium mb-2"
-            >
-              Email Address
-            </label>
-            <input
-              type="email"
-              name="email"
-              id="email"
-              value={formData.email}
-              onChange={handleChange}
-              required
-              className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 outline-none text-gray-900"
-              placeholder="Enter your email"
-            />
+    <div className="flex min-h-screen bg-white">
+      {/* Left side: Image */}
+      <div className="hidden lg:flex lg:w-1/2 relative">
+        <img
+          src="https://images.unsplash.com/photo-1574015974293-817f0ebebb74?auto=format&fit=crop&w=1600&q=80"
+          alt="Personal Finance Analytics"
+          className="absolute inset-0 w-full h-full object-cover"
+        />
+        <div className="absolute inset-0 bg-indigo-900/40 mix-blend-multiply"></div>
+        <div className="relative z-10 p-12 flex flex-col justify-between h-full w-full">
+          <Link to="/" className="text-2xl font-bold text-white flex items-center gap-2">
+            <div className="w-8 h-8 bg-white text-indigo-900 rounded-lg flex justify-center items-center">F</div>
+            Finary
+          </Link>
+          <div className="text-white max-w-lg">
+            <h2 className="text-3xl font-bold mb-4">Empowering Personal Finance</h2>
+            <p className="text-indigo-100 text-lg">Access your dashboard to track accounts, manage invoices, and optimize your financial goals.</p>
           </div>
+        </div>
+      </div>
 
-          {/* Password */}
-          <div>
-            <label
-              htmlFor="password"
-              className="block text-gray-700 font-medium mb-2"
-            >
-              Password
-            </label>
-            <input
-              type="password"
-              name="password"
-              id="password"
-              value={formData.password}
-              onChange={handleChange}
-              required
-              className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 outline-none text-gray-900"
-              placeholder="Enter your password"
-            />
+      {/* Right side: Form */}
+      <div className="flex-1 flex flex-col justify-center px-4 sm:px-6 lg:flex-none lg:w-1/2 xl:px-24">
+        <div className="mx-auto w-full max-w-sm lg:w-96">
+          <div className="lg:hidden mb-8">
+            <Link to="/" className="text-2xl font-bold text-indigo-700 flex items-center gap-2">
+              <div className="w-8 h-8 bg-indigo-600 text-white rounded-lg flex justify-center items-center">F</div>
+              Finary
+            </Link>
           </div>
+          
+          <h2 className="text-3xl font-bold tracking-tight text-slate-900">
+            Sign in to your account
+          </h2>
+          <p className="mt-2 text-sm text-slate-600">
+            Or{" "}
+            <Link to="/register" className="font-medium text-indigo-600 hover:text-indigo-500 transition">
+              register for a new account
+            </Link>
+          </p>
 
-          {message && (
-            <p
-              className={`text-sm text-center ${
-                message.includes("success")
-                  ? "text-green-600"
-                  : "text-red-500"
-              }`}
-            >
-              {message}
-            </p>
-          )}
+          <div className="mt-8">
+            <form onSubmit={handleSubmit} className="space-y-6">
+              <div>
+                <label
+                  htmlFor="email"
+                  className="block text-sm font-medium text-slate-700"
+                >
+                  Email address
+                </label>
+                <div className="mt-2">
+                  <input
+                    type="email"
+                    name="email"
+                    id="email"
+                    value={formData.email}
+                    onChange={handleChange}
+                    required
+                    className="block w-full rounded-lg border-0 py-2.5 px-3.5 text-slate-900 shadow-xs ring-1 ring-inset ring-slate-300 placeholder:text-slate-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                    placeholder="Enter your email"
+                  />
+                </div>
+              </div>
 
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full bg-green-600 text-white py-2 rounded-lg hover:bg-yellow-400 transition disabled:opacity-50"
-          >
-            {loading ? "Logging in..." : "Login"}
-          </button>
-        </form>
+              <div>
+                <label
+                  htmlFor="password"
+                  className="block text-sm font-medium text-slate-700"
+                >
+                  Password
+                </label>
+                <div className="mt-2">
+                  <input
+                    type="password"
+                    name="password"
+                    id="password"
+                    value={formData.password}
+                    onChange={handleChange}
+                    required
+                    className="block w-full rounded-lg border-0 py-2.5 px-3.5 text-slate-900 shadow-xs ring-1 ring-inset ring-slate-300 placeholder:text-slate-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                    placeholder="Enter your password"
+                  />
+                </div>
+              </div>
 
-        <button
-          onClick={() => navigate("/register")}
-          className="w-full text-blue-600 mt-4 hover:underline text-sm"
-        >
-          Don’t have an account? Register →
-        </button>
+              {message && (
+                <div
+                  className={`rounded-md p-4 text-sm ${
+                    message.includes("success")
+                      ? "bg-emerald-50 text-emerald-700"
+                      : "bg-rose-50 text-rose-700"
+                  }`}
+                >
+                  {message}
+                </div>
+              )}
+
+              <button
+                type="submit"
+                disabled={loading}
+                className="flex w-full justify-center rounded-lg bg-indigo-600 px-3 py-2.5 text-sm font-semibold text-white shadow-xs hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 disabled:opacity-50 transition"
+              >
+                {loading ? "Signing in..." : "Sign in"}
+              </button>
+            </form>
+          </div>
+        </div>
       </div>
     </div>
   );
